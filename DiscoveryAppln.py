@@ -161,7 +161,9 @@ class DiscoveryAppln():
             if (self.exp_publishers == self.count_publishers and self.exp_subscribers == self.count_subscribers):
                 self.state = self.State.ISREADY
 
-            return self.mw_obj.register_reply( discovery_pb2.STATUS_SUCCESS)
+            self.backup()
+            self.mw_obj.register_reply( discovery_pb2.STATUS_SUCCESS)
+            return None
 
         except Exception as e:
             raise e
@@ -175,7 +177,8 @@ class DiscoveryAppln():
         self.logger.info ("     Count Subscribers: {}".format (self.count_subscribers))
         self.logger.info ("     Count Publishers: {}".format (self.count_publishers))
         status = (self.state == self.State.ISREADY and (self.dissemination!="Broker" or self.broker != None))
-        return self.mw_obj.is_ready_reply(status)
+        self.mw_obj.is_ready_reply(status)
+        return None
         
     def lookup_pub_by_topic_request(self, topiclist, broker):
         try:
@@ -184,7 +187,7 @@ class DiscoveryAppln():
             self.logger.info("DiscoveryAppln::lookup_pub_by_topic_reqest")
             if (self.dissemination == "Broker" and not broker):
                 publist.append(self.broker)
-                return self.mw_object.loopup_pub_by_topic_reply(publist)
+                return self.mw_obj.lookup_pub_by_topic_reply(publist)
             for topic in topiclist:
                 self.logger.debug("DiscoveryAppln::lookup_pub_by_topic_request - topic: {}".format(topic))
                 publishers = []
@@ -196,10 +199,27 @@ class DiscoveryAppln():
                     
                     publist.append(pub_info)
             self.logger.info("DiscoveryAppln::lookup_pub_by_topic_reqest - returning publist")
-            return self.mw_obj.lookup_pub_by_topic_reply(publist)
+            self.mw_obj.lookup_pub_by_topic_reply(publist)
+            return None
         except Exception as e:
             raise e
-
+    def backup(self):
+        ''' Backup state '''
+        try:
+            self.logger.info("DiscoveryAppln::backup")
+            self.mw_obj.send_state_to_replica(self.topics_to_publishers, self.publisher_to_ip, self.count_publishers, self.count_subscribers, self.state)
+        except Exception as e:
+            raise e
+        
+    def update_broker(self, broker):
+        self.broker = broker
+    def update_state(self, topics_to_publisher, publisher_to_ip, count_pub, count_sub, state):
+        self.topics_to_publishers = topics_to_publisher
+        self.publisher_to_ip = publisher_to_ip
+        self.count_publishers = count_pub
+        self.count_subscribers = count_sub
+        self.state = state
+        
     def dump(self):
         ''' Pretty print '''
 
@@ -230,9 +250,13 @@ def parseCmdLineArgs():
 
     parser.add_argument("-p", "--port", type=int, default=5555,
                         help="Port number for underlying discovery ZMQ, default=5557")
+    parser.add_argument("-q", "--quorum", type=int, default=3,
+                        help="Expected number of discovery nodes in the quorum, default=3")
 
     parser.add_argument("-c", "--config", default="config.ini",
                         help="Configuration file, default=config.ini")
+    parser.add_argument ("-z", "--zookeeper", default="localhost:2181", help="IP Addr:Port combo for the zookeeper service, default is localhost:2181")
+
 
     parser.add_argument("-l", "--loglevel", type=int, default=logging.INFO, choices=[
                         logging.DEBUG, logging.INFO, logging.WARNING, logging.ERROR, logging.CRITICAL], help="logging level, choices 10,20,30,40,50: default 20=logging.INFO")

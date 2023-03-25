@@ -24,9 +24,18 @@ import sys    # for syspath and system exception
 import time   # for sleep
 import logging  # for logging. Use it in place of print statements.
 import zmq  # ZMQ sockets
+import json # for json serialization/deserialization
 
 # import serialization logic
 from CS6381_MW import discovery_pb2
+
+# import the Kazoo package
+from kazoo.client import KazooClient
+from kazoo.exceptions import NodeExistsError, NoNodeError
+from kazoo.recipe.election import Election
+from kazoo.recipe.watchers import DataWatch
+
+
 
 ##################################
 #       Discovery Middleware class
@@ -44,6 +53,9 @@ class DiscoveryMW():
         self.port = None  # port num where we are going to publish our topics
         self.upcall_obj = None  # handle to appln obj to handle appln-specific data
         self.handle_events = True  # in general we keep going thru the event loop
+        self.zk = None # handle to the zookeeper client
+        self.pub = None # handle publishing from leader to replicas
+        self.sub = None # handle receiving info from leader
 
     ########################################
     # configure/initialize
@@ -67,20 +79,79 @@ class DiscoveryMW():
 
             self.logger.debug("DiscoveryMW::configure: create ZMQ REP socket")
             self.rep = context.socket(zmq.REP)
-
+            
+            
             self.logger.debug("DiscoveryMW::configure: register poller")
             self.poller.register(self.rep, zmq.POLLIN)
+    
             # bind socket to the address
             self.logger.debug(
                 "DiscoveryMW::configure: bind REP socket to address")
-            bind_string = "tcp://*:" + str(self.port)
-            self.rep.bind(bind_string)
+            self.bind_string = "tcp://*:" + str(self.port)
+            self.rep.bind(self.bind_string)
 
+            self.logger.debug("DiscoveryMW::configure: create ZMQ PUB and SUB socket")
+            self.pub = context.socket(zmq.PUB)
+            self.sub = context.socket(zmq.SUB)
+            self.poller.register(self.sub, zmq.POLLIN)
+
+            self.bind_string = "tcp://*:" + str(self.port + 1)
+            self.pub.bind(self.bind_string)
+            self.logger.debug("DiscoveryMW::configure: create ZK client")
+            self.zk = KazooClient(hosts=args.zookeeper)
+            # establishing quorum
+            self.quorum = args.quorum
+            self.create_leader(args.name)
+            self.logger.debug("DiscoveryMW::configure: ZK client state = {}".format(self.zk.state))
             self.logger.info("DiscoveryMW::configure completed")
 
         except Exception as e:
             raise e
-
+    ###############################################
+    # create leader else wait until leader is done
+    ###############################################
+    def create_leader(self, name):
+        try:
+            self.logger.info("DiscoveryMW::create_leader")
+            self.zk.start()
+            self.logger.info("DiscoveryMW::create_leader: ZK client state = {}".format(self.zk.state))
+            # create a znode under /discovery to count the number of quorum in while loop
+            
+            self.zk.create("/discovery/" + name, ephemeral=True, makepath=True)
+            while (len(self.zk.get_children("/discovery")) < self.quorum):
+                self.logger.info("DiscoveryMW::create_leader: quorum_size not met, waiting for 2s")
+                time.sleep(2)
+            
+            if self.zk.exists("/leader"):
+                self.logger.info("DiscoveryMW::create_leader: leader exists, connecting to leader through SUB socket")
+                meta = json.loads(self.zk.get("/leader")[0].decode("utf-8"))
+                self.logger.info("DiscoveryMW::create_leader: leader address = {}".format(meta["pub_addr"]))
+                self.sub.connect(meta["pub_addr"])
+                self.sub.setsockopt_string(zmq.SUBSCRIBE, "backup")
+            else:
+                self.logger.info("DiscoveryMW::create_leader: no leader exists, create new ephemeral leader")
+                rep_addr = "tcp://" + self.addr + ":" + str(self.port)
+                pub_addr = "tcp://" + self.addr + ":" + str(self.port + 1)
+                meta_str = json.dumps({"rep_addr": rep_addr, "pub_addr": pub_addr})
+                self.zk.create("/leader", value=meta_str.encode("utf-8"), ephemeral=True, makepath=True)
+            return
+        except Exception as e:
+            raise e
+    
+    # if /leader znode gets deleted, we try to create new leader        
+    @DataWatch("/leader")
+    def watch_leader(self, data, stat):
+        if data is None:
+            self.logger.info("DiscoveryMW::watch_leader: leader deleted, trying to create new leader")
+            self.create_leader()
+        
+    @DataWatch("/broker")
+    def watch_broker(self, data, stat):
+        if data is not None:
+            self.logger.info("DiscoveryMW::watch_broker: broker changed, updating broker info")
+            broker_info = json.loads(data.decode("utf-8"))
+            self.upcall_obj.update_broker_info(broker_info)
+    
     #################################################################
     # run the event loop where we expect to receive a reply to a sent request
     #################################################################
@@ -94,12 +165,25 @@ class DiscoveryMW():
                     timeout = self.upcall_obj.invoke_operation()
                 elif self.rep in events:
                     timeout = self.handle_request()
+                elif self.sub in events:
+                    timeout = self.recv_from_leader()
                 else:
                     raise Exception ("Unknown event after poll")
             self.logger.info("DiscoveryMW::event_loop out of the event loop")
         except Exception as e:
             raise e
 
+    # recv states update from leader
+    def recv_from_leader(self):
+        try:
+            data_recv = self.sub.recv_multipart()
+            # [ttp, pti, count_pub, count_sub, state]
+            ttp = json.loads(data_recv[0].decode("utf-8"))
+            pti = json.loads(data_recv[1].decode("utf-8"))
+            
+            self.upcall_obj.update_state(ttp, pti, data_recv[2], data_recv[3], data_recv[4])
+        except Exception as e:
+            raise e
     # handle the poller request:
     def handle_request(self):
         try:
@@ -177,7 +261,6 @@ class DiscoveryMW():
             self.rep.send(buf2send)
             
             self.logger.info("DiscoveryMW::register_reply: done replying to client register request")
-            return 0
         except Exception as e:
             raise e
     # set upcall handle
@@ -210,7 +293,6 @@ class DiscoveryMW():
             self.rep.send(buf2send)
             
             self.logger.info("DiscoveryMW::lookup_reply: done replying to client lookup request")
-            return 0
         except Exception as e:
             raise e
         
@@ -220,3 +302,9 @@ class DiscoveryMW():
     # disable event loop
     def disable_event_loop(self):
         self.handle_events = False
+        
+        
+    def send_state_to_replica(self, topics_to_publisher, publisher_to_ip, count_pub, count_sub, state):
+        ttp = json.dumps(topics_to_publisher)
+        pti = json.dumps(publisher_to_ip)
+        self.pub.send_multipart(["backup", ttp.encode("utf-8"), pti.encode("utf-8"), count_pub, count_sub, state])
