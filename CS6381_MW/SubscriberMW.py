@@ -43,7 +43,12 @@ import zmq  # ZMQ sockets
 import timeit # for latency measurement
 import signal # for signal handling
 import csv # for csv file writing
+import json 
 
+from kazoo.client import KazooClient
+from kazoo.exceptions import NodeExistsError, NoNodeError
+from kazoo.recipe.election import Election
+from kazoo.recipe.watchers import DataWatch
 # import serialization logic
 from CS6381_MW import discovery_pb2
 
@@ -63,15 +68,19 @@ class SubscriberMW():
         # self.start_time = None
         # self.reset_time = None
         self.filename = None
+        self.zk = None
 
     # configure/initialize
     def configure(self, args):
         try:
+            
             self.logger.debug("SubscriberMW: configure")
             self.filename = args.filename
             # # First retrieve our advertised IP addr and the subscriber port num
             # self.port = args.port
             # self.addr = args.addr
+            self.logger.debug("SubscriberMW::configure: creating ZK client")
+            self.zk = KazooClient(hosts=args.zookeeper)
 
             # Next get the ZMQ context
             self.logger.debug("SubscriberMW: configure: obtain ZMQ context")
@@ -93,12 +102,49 @@ class SubscriberMW():
             # supplied in our argument parsing.
             self.logger.debug(
                 "SubscriberMW: configure: connect to discovery service")
-            connect_str = "tcp://" + args.discovery
-            self.req.connect(connect_str)
+            self.zk.start()
+
+            self.set_req()
+            @self.zk.DataWatch("/leader")
+            def watch_leader(data, stat):
+                self.logger.info("BrokerMW::watch_leader: leader node changed")
+                meta = json.loads(self.zk.get("/leader")[0].decode('utf-8'))
+                self.logger.info("BrokerMW::watch_leader: disconnecting req and redirecting to new leader")
+                self.req.disconnect()
+                self.req.connect(meta["rep_addr"])
+                self.logger.info("Successfully connected to new leader")
+                return
+            @self.zk.DataWatch("/broker")
+            def watch_broker(data, stat):
+                self.logger.info("BrokerMW::watch_broker: broker node changed")
+                self.upcall_obj.re_lookup()
+            
+            @self.zk.ChildrenWatch("/publisher")
+            def watch_pubs(children):
+                self.logger.info("BrokerMW::watch_pubs: publishers changed, sending lookup request")
+                self.upcall_obj.re_lookup()
+        
+            self.logger.info("SubscriberMW::configure completed")
 
         except Exception as e:
             raise e
 
+    def add_self_to_zk(self, name):
+        self.logger
+
+    def set_req(self):
+        try:
+            while (self.zk.exists("/leader") == None):
+                time.sleep(1)
+            meta = json.loads(self.zk.get("/leader")[0].decode('utf-8'))
+            self.sub.connect(meta["rep_addr"])
+            self.logger.debug("Successfully connected to leader")
+                
+        except Exception as e:
+            raise e
+
+   
+        
     def event_loop(self, timeout=None):
         try:
             self.logger.debug("SubscriberMW: event_loop - run the event loop")
@@ -228,6 +274,8 @@ class SubscriberMW():
         try:
             self.logger.info("SubscriberMW::lookup")
             self.logger.debug("SubscriberMW::lookup - setsockopt for each topic")
+            
+            
             for topic in topiclist:
                 self.sub.setsockopt_string(zmq.SUBSCRIBE, topic)
             disc_req = discovery_pb2.DiscoveryReq() #allocate

@@ -25,6 +25,12 @@ import sys    # for syspath and system exception
 import time   # for sleep
 import logging # for logging. Use it in place of print statements.
 import zmq  # ZMQ sockets
+import json
+
+from kazoo.client import KazooClient
+from kazoo.exceptions import NodeExistsError, NoNodeError
+from kazoo.recipe.election import Election
+from kazoo.recipe.watchers import DataWatch
 
 # import serialization logic
 from CS6381_MW import discovery_pb2
@@ -46,6 +52,7 @@ class BrokerMW():
         self.poller = None # a poller object to poll on the sockets
         self.upcall_obj = None # handle to appln obj to handle appln-specific data
         self.handle_events = True # in general we keep going thru the event loop
+        self.zk = None # handle to zookeeper client
         
     ########################################
     # configure/initialize
@@ -88,11 +95,46 @@ class BrokerMW():
             self.logger.debug("BrokerMW::configure: bind to the PUB")
             bind_string = "tcp://*:" + str(self.port)
             self.pub.bind(bind_string)
+            
+            self.logger.debug("BrokerMW::configure: creating ZK client")
+            self.zk = KazooClient(hosts=args.zookeeper)
+            self.broker_leader(args.name)
+            @self.zk.DataWatch("/broker")
+            def watch_broker(self, data, stat):
+                if data is None:
+                    self.logger.info("BrokerMW::watch_broker: broker node deleted, attempting to become leader")
+                    self.broker_leader()
+                    
+            @self.zk.DataWatch("/leader")
+            def watch_leader(self, data, stat):
+                self.logger.info("BrokerMW::watch_leader: leader node changed")
+                meta = json.loads(self.zk.get("/leader")[0].decode('utf-8'))
+                self.logger.info("BrokerMW::watch_leader: disconnecting req and redirecting to new leader")
+                self.req.disconnect()
+                self.req.connect(meta["rep_addr"])
+                self.logger.info("Successfully connected to new leader")
             self.logger.info("BrokerMW::configure completed")
         except Exception as e:
             raise e
     
+    def broker_leader(self, name):
+        try:
+            self.logger.info("BrokerMW::broker_leader")
+            self.zk.start()
+            self.logger.info("BrokerMW::broker_leader: connected to zookeeper")
+            try:
+                self.logger.info("BrokerMW::broker_leader: broker node does not exist, creating self")
+                addr = "tcp://" + self.addr + ":" + str(self.port)
+                self.zk.create("/broker", value=addr.encode('utf-8'), ephemeral=True, makepath=True)
+            except NodeExistsError:
+                self.logger.info("BrokerMW::broker_leader: broker node exists")
+                
+
+        except Exception as e:
+            raise e
     
+        
+        
     ########################################
     # run event loop 
     ########################################

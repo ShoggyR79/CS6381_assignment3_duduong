@@ -145,7 +145,9 @@ class SubscriberAppln():
                 
         except Exception as e:
             raise e
-        
+    def re_lookup(self):
+        self.logger.info("SubscriberAppln::re_lookup - send LOOKUP msg to discovery service")
+        self.mw_obj.lookup(self.topiclist)
     def register_response(self, reg_resp):
         '''Handle the register response'''
         try:

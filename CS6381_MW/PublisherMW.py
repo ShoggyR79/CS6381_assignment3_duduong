@@ -31,6 +31,11 @@ import logging # for logging. Use it in place of print statements.
 import zmq  # ZMQ sockets
 import json
 import timeit # for timing
+
+from kazoo.client import KazooClient
+from kazoo.exceptions import NodeExistsError, NoNodeError
+from kazoo.recipe.election import Election
+from kazoo.recipe.watchers import DataWatch
 # import serialization logic
 from CS6381_MW import discovery_pb2
 #from CS6381_MW import topic_pb2  # you will need this eventually
@@ -54,6 +59,8 @@ class PublisherMW ():
     self.port = None # port num where we are going to publish our topics
     self.upcall_obj = None # handle to appln obj to handle appln-specific data
     self.handle_events = True # in general we keep going thru the event loop
+    self.zk = None
+    self.name = None
 
   ########################################
   # configure/initialize
@@ -62,13 +69,16 @@ class PublisherMW ():
     ''' Initialize the object '''
 
     try:
+      
       # Here we initialize any internal variables
       self.logger.info ("PublisherMW::configure")
 
+      self.logger.debug("PublisherMW::configure: creating ZK client")
+      self.zk = KazooClient(hosts=args.zookeeper)
       # First retrieve our advertised IP addr and the publication port num
       self.port = args.port
       self.addr = args.addr
-      
+      self.name = args.name
       # Next get the ZMQ context
       self.logger.debug ("PublisherMW::configure - obtain ZMQ context")
       context = zmq.Context ()  # returns a singleton object
@@ -96,9 +106,8 @@ class PublisherMW ():
       self.logger.debug ("PublisherMW::configure - connect to Discovery service")
       # For our assignments we will use TCP. The connect string is made up of
       # tcp:// followed by IP addr:port number.
-      connect_str = "tcp://" + args.discovery
-      self.req.connect (connect_str)
-      
+      self.set_req()
+            
       # Since we are the publisher, the best practice as suggested in ZMQ is for us to
       # "bind" the PUB socket
       self.logger.debug ("PublisherMW::configure - bind to the pub socket")
@@ -108,11 +117,36 @@ class PublisherMW ():
       bind_string = "tcp://*:" + str(self.port)
       self.pub.bind (bind_string)
       
+      @self.zk.DataWatch("/leader")
+      def watch_leader(self, data, stat):
+        self.logger.info("BrokerMW::watch_leader: leader node changed")
+        meta = json.loads(self.zk.get("/leader")[0].decode('utf-8'))
+        self.logger.info("BrokerMW::watch_leader: disconnecting req and redirecting to new leader")
+        self.req.disconnect()
+        self.req.connect(meta["rep_addr"])
+        self.logger.info("Successfully connected to new leader")
+        
+      self.logger.info("PublisherMW::configure completed")
+      
+      
       self.logger.info ("PublisherMW::configure completed")
 
     except Exception as e:
       raise e
+  
+  def set_req(self):
+    self.zk.start()
+    try:
+      while (self.zk.exists("/leader") == None):
+        time.sleep(1)
+      meta = json.loads(self.zk.get("/leader")[0].decode('utf-8'))
+      self.sub.connect(meta["rep_addr"])
+      self.logger.debug("Successfully connected to leader")
+        
+    except Exception as e:
+      raise e
 
+  
   #################################################################
   # run the event loop where we expect to receive a reply to a sent request
   #################################################################
@@ -253,6 +287,14 @@ class PublisherMW ():
       self.logger.debug ("PublisherMW::register - send stringified buffer to Discovery service")
       self.req.send (buf2send)  # we use the "send" method of ZMQ that sends the bytes
 
+      # register publisher to ZK
+      self.logger.debug ("PublisherMW::register - register publisher to ZK")
+      data = {}
+      data["id"] = {"id": name, "addr": self.addr, "port": self.port} 
+      data["topiclist"] = topiclist
+      data_json = json.dumps(data)
+      self.zk.create("/publisher/" + self.name, value=data_json.encode("utf-8"), ephemeral=True, makepath=True)
+      
       # now go to our event loop to receive a response to this request
       self.logger.info ("PublisherMW::register - sent register message and now now wait for reply")
     

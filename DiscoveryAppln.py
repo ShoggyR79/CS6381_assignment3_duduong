@@ -110,7 +110,7 @@ class DiscoveryAppln():
             self.logger.debug("DiscoveryAppln::driver - setting upcall handle")
             self.mw_obj.set_upcall_handle(self)
 
-            self.state = self.State.WAITING
+            self.state = self.State.ISREADY
 
             self.mw_obj.event_loop(timeout=0)
 
@@ -158,9 +158,7 @@ class DiscoveryAppln():
             elif (reg_req.role == discovery_pb2.ROLE_BOTH and self.dissemination == "Broker"):
                 self.logger.info("DiscoveryAppln::handle_register broker registered and saved")
                 self.broker = reg_req.info
-            if (self.exp_publishers == self.count_publishers and self.exp_subscribers == self.count_subscribers):
-                self.state = self.State.ISREADY
-
+            
             self.backup()
             self.mw_obj.register_reply( discovery_pb2.STATUS_SUCCESS)
             return None
@@ -168,8 +166,7 @@ class DiscoveryAppln():
         except Exception as e:
             raise e
 
-    # program to handle isready request
-
+  
     def isready_request(self):
         self.logger.debug("DiscoveryAppln::isready_request")
         self.logger.info ("     Expected Subscribers: {}".format (self.exp_subscribers))
@@ -211,8 +208,23 @@ class DiscoveryAppln():
         except Exception as e:
             raise e
         
-    def update_broker(self, broker):
+    def update_broker_info(self, broker):
         self.broker = broker
+        
+    def update_publisher_info(self, publishers):
+        self.publisher_to_ip = {}
+        self.topics_to_publishers = {}
+        for pub in publishers:
+            info = pub["id"]
+            topiclist = pub["topiclist"]
+            self.publisher_to_ip[info["id"]] = info
+            for topic in topiclist:
+                if topic not in self.topics_to_publishers:
+                    self.topics_to_publishers[topic] = []
+                self.topics_to_publishers[topic].append(info["id"])
+            
+            
+            
     def update_state(self, topics_to_publisher, publisher_to_ip, count_pub, count_sub, state):
         self.topics_to_publishers = topics_to_publisher
         self.publisher_to_ip = publisher_to_ip
