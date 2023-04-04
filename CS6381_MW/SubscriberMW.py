@@ -110,7 +110,7 @@ class SubscriberMW():
                 self.logger.info("BrokerMW::watch_leader: leader node changed")
                 meta = json.loads(self.zk.get("/leader")[0].decode('utf-8'))
                 self.logger.info("BrokerMW::watch_leader: disconnecting req and redirecting to new leader")
-                self.req.disconnect()
+                self.req.unbind()
                 self.req.connect(meta["rep_addr"])
                 self.logger.info("Successfully connected to new leader")
                 return
@@ -137,7 +137,7 @@ class SubscriberMW():
             while (self.zk.exists("/leader") == None):
                 time.sleep(1)
             meta = json.loads(self.zk.get("/leader")[0].decode('utf-8'))
-            self.sub.connect(meta["rep_addr"])
+            self.req.connect(meta["rep_addr"])
             self.logger.debug("Successfully connected to leader")
                 
         except Exception as e:

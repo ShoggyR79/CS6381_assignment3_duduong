@@ -1,0 +1,118 @@
+2023-04-03 21:44:07,145 - root - INFO - Main - acquire a child logger and then log messages in the child
+2023-04-03 21:44:07,146 - PublisherAppln - DEBUG - Main: parse command line arguments
+2023-04-03 21:44:07,151 - PublisherAppln - DEBUG - Main: resetting log level to 20
+2023-04-03 21:44:07,151 - PublisherAppln - INFO - PublisherAppln::configure
+2023-04-03 21:44:07,152 - PublisherAppln - INFO - PublisherMW::configure
+2023-04-03 21:44:07,160 - kazoo.client - INFO - Connecting to 10.0.0.1(10.0.0.1):2181, use_ssl: False
+2023-04-03 21:44:07,165 - kazoo.client - WARNING - Connection dropped: socket connection error: Connection refused
+2023-04-03 21:44:07,261 - kazoo.client - INFO - Connecting to 10.0.0.1(10.0.0.1):2181, use_ssl: False
+2023-04-03 21:44:07,264 - kazoo.client - WARNING - Connection dropped: socket connection error: Connection refused
+2023-04-03 21:44:07,472 - kazoo.client - INFO - Connecting to 10.0.0.1(10.0.0.1):2181, use_ssl: False
+2023-04-03 21:44:07,476 - kazoo.client - WARNING - Connection dropped: socket connection error: Connection refused
+2023-04-03 21:44:07,947 - kazoo.client - INFO - Connecting to 10.0.0.1(10.0.0.1):2181, use_ssl: False
+2023-04-03 21:44:07,949 - kazoo.client - WARNING - Connection dropped: socket connection error: Connection refused
+2023-04-03 21:44:08,949 - kazoo.client - INFO - Connecting to 10.0.0.1(10.0.0.1):2181, use_ssl: False
+2023-04-03 21:44:08,951 - kazoo.client - DEBUG - Sending request(xid=None): Connect(protocol_version=0, last_zxid_seen=0, time_out=10000, session_id=0, passwd=b'\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00', read_only=None)
+2023-04-03 21:44:08,958 - kazoo.client - INFO - Zookeeper connection established, state: CONNECTED
+2023-04-03 21:44:08,959 - kazoo.client - DEBUG - Sending request(xid=1): Exists(path='/leader', watcher=None)
+2023-04-03 21:44:09,963 - kazoo.client - DEBUG - Sending request(xid=2): Exists(path='/leader', watcher=None)
+2023-04-03 21:44:09,968 - kazoo.client - DEBUG - Received response(xid=2): ZnodeStat(czxid=12, mzxid=12, ctime=1680576249877, mtime=1680576249877, version=0, cversion=0, aversion=0, ephemeralOwner=72058456050696197, dataLength=87, numChildren=0, pzxid=12)
+2023-04-03 21:44:09,969 - kazoo.client - DEBUG - Sending request(xid=3): GetData(path='/leader', watcher=None)
+2023-04-03 21:44:09,971 - kazoo.client - DEBUG - Received response(xid=3): (b'{"name": "disc3", "rep_addr": "tcp://10.0.0.4:5555", "pub_addr": "tcp://10.0.0.4:5556"}', ZnodeStat(czxid=12, mzxid=12, ctime=1680576249877, mtime=1680576249877, version=0, cversion=0, aversion=0, ephemeralOwner=72058456050696197, dataLength=87, numChildren=0, pzxid=12))
+2023-04-03 21:44:09,972 - kazoo.client - DEBUG - Sending request(xid=4): GetData(path='/leader', watcher=<bound method DataWatch._watcher of <kazoo.recipe.watchers.DataWatch object at 0x7fa9ff05e0b0>>)
+2023-04-03 21:44:09,975 - kazoo.client - DEBUG - Received response(xid=4): (b'{"name": "disc3", "rep_addr": "tcp://10.0.0.4:5555", "pub_addr": "tcp://10.0.0.4:5556"}', ZnodeStat(czxid=12, mzxid=12, ctime=1680576249877, mtime=1680576249877, version=0, cversion=0, aversion=0, ephemeralOwner=72058456050696197, dataLength=87, numChildren=0, pzxid=12))
+2023-04-03 21:44:09,976 - PublisherAppln - INFO - BrokerMW::watch_leader: leader node changed
+2023-04-03 21:44:09,976 - kazoo.client - DEBUG - Sending request(xid=5): GetData(path='/leader', watcher=None)
+2023-04-03 21:44:09,980 - kazoo.client - DEBUG - Received response(xid=5): (b'{"name": "disc3", "rep_addr": "tcp://10.0.0.4:5555", "pub_addr": "tcp://10.0.0.4:5556"}', ZnodeStat(czxid=12, mzxid=12, ctime=1680576249877, mtime=1680576249877, version=0, cversion=0, aversion=0, ephemeralOwner=72058456050696197, dataLength=87, numChildren=0, pzxid=12))
+2023-04-03 21:44:09,981 - PublisherAppln - INFO - BrokerMW::watch_leader: disconnecting req and redirecting to new leader
+2023-04-03 21:44:09,981 - PublisherAppln - INFO - Successfully connected to new leader
+2023-04-03 21:44:09,981 - PublisherAppln - INFO - PublisherMW::configure completed
+2023-04-03 21:44:09,981 - PublisherAppln - INFO - PublisherMW::configure completed
+2023-04-03 21:44:09,981 - PublisherAppln - INFO - PublisherAppln::configure - configuration complete
+2023-04-03 21:44:09,981 - PublisherAppln - INFO - PublisherAppln::driver
+2023-04-03 21:44:09,981 - PublisherAppln - INFO - **********************************
+2023-04-03 21:44:09,981 - PublisherAppln - INFO - PublisherAppln::dump
+2023-04-03 21:44:09,981 - PublisherAppln - INFO - ------------------------------
+2023-04-03 21:44:09,981 - PublisherAppln - INFO -      Name: pub5
+2023-04-03 21:44:09,981 - PublisherAppln - INFO -      Lookup: Centralized
+2023-04-03 21:44:09,981 - PublisherAppln - INFO -      Dissemination: Direct
+2023-04-03 21:44:09,981 - PublisherAppln - INFO -      Num Topics: 5
+2023-04-03 21:44:09,982 - PublisherAppln - INFO -      TopicList: ['location', 'temperature', 'airquality', 'altitude', 'weather']
+2023-04-03 21:44:09,982 - PublisherAppln - INFO -      Iterations: 1000
+2023-04-03 21:44:09,982 - PublisherAppln - INFO -      Frequency: 1
+2023-04-03 21:44:09,982 - PublisherAppln - INFO - **********************************
+2023-04-03 21:44:09,982 - PublisherAppln - INFO - PublisherMW::event_loop - run the event loop
+2023-04-03 21:44:09,982 - PublisherAppln - INFO - PublisherAppln::invoke_operation
+2023-04-03 21:44:09,982 - PublisherAppln - INFO - PublisherAppln::invoke_operation - state = State.REGISTER
+2023-04-03 21:44:09,982 - PublisherAppln - INFO - PublisherMW::register
+2023-04-03 21:44:09,982 - kazoo.client - DEBUG - Sending request(xid=6): Create(path='/publisher/pub5', data=b'{"id": {"id": "pub5", "addr": "10.0.0.5", "port": 5577}, "topiclist": ["location", "temperature", "airquality", "altitude", "weather"]}', acl=[ACL(perms=31, acl_list=['ALL'], id=Id(scheme='world', id='anyone'))], flags=1)
+2023-04-03 21:44:09,988 - kazoo.client - DEBUG - Received error(xid=6) NoNodeError()
+2023-04-03 21:44:09,989 - kazoo.client - DEBUG - Sending request(xid=7): Exists(path='/publisher', watcher=None)
+2023-04-03 21:44:09,990 - kazoo.client - DEBUG - Sending request(xid=8): Exists(path='/', watcher=None)
+2023-04-03 21:44:09,992 - kazoo.client - DEBUG - Received response(xid=8): ZnodeStat(czxid=0, mzxid=0, ctime=0, mtime=0, version=0, cversion=1, aversion=0, ephemeralOwner=0, dataLength=0, numChildren=3, pzxid=12)
+2023-04-03 21:44:09,992 - kazoo.client - DEBUG - Sending request(xid=9): Create(path='/publisher', data=b'', acl=[ACL(perms=31, acl_list=['ALL'], id=Id(scheme='world', id='anyone'))], flags=0)
+2023-04-03 21:44:09,995 - kazoo.client - DEBUG - Received response(xid=9): '/publisher'
+2023-04-03 21:44:09,998 - kazoo.client - DEBUG - Sending request(xid=10): Create(path='/publisher/pub5', data=b'{"id": {"id": "pub5", "addr": "10.0.0.5", "port": 5577}, "topiclist": ["location", "temperature", "airquality", "altitude", "weather"]}', acl=[ACL(perms=31, acl_list=['ALL'], id=Id(scheme='world', id='anyone'))], flags=1)
+2023-04-03 21:44:10,002 - kazoo.client - DEBUG - Received response(xid=10): '/publisher/pub5'
+2023-04-03 21:44:10,003 - PublisherAppln - INFO - PublisherMW::register - sent register message and now now wait for reply
+2023-04-03 21:44:21,232 - kazoo.client - DEBUG - Received EVENT: Watch(type=2, state=3, path='/leader')
+2023-04-03 21:44:21,233 - kazoo.client - DEBUG - Sending request(xid=11): GetData(path='/leader', watcher=<bound method DataWatch._watcher of <kazoo.recipe.watchers.DataWatch object at 0x7fa9ff05e0b0>>)
+2023-04-03 21:44:21,236 - kazoo.client - DEBUG - Received error(xid=11) NoNodeError()
+2023-04-03 21:44:21,237 - kazoo.client - DEBUG - Sending request(xid=12): Exists(path='/leader', watcher=<bound method DataWatch._watcher of <kazoo.recipe.watchers.DataWatch object at 0x7fa9ff05e0b0>>)
+2023-04-03 21:44:21,238 - PublisherAppln - INFO - BrokerMW::watch_leader: leader node changed
+2023-04-03 21:44:21,239 - kazoo.client - DEBUG - Sending request(xid=13): GetData(path='/leader', watcher=None)
+2023-04-03 21:44:21,240 - kazoo.client - DEBUG - Received error(xid=13) NoNodeError()
+2023-04-03 21:44:21,241 - kazoo.recipe.watchers - ERROR - 
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/kazoo/recipe/watchers.py", line 162, in _log_func_exception
+    result = self._func(data, stat, event)
+TypeError: PublisherMW.configure.<locals>.watch_leader() takes 2 positional arguments but 3 were given
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/kazoo/recipe/watchers.py", line 164, in _log_func_exception
+    result = self._func(data, stat)
+  File "/home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/CS6381_MW/PublisherMW.py", line 124, in watch_leader
+    meta = json.loads(self.zk.get("/leader")[0].decode('utf-8'))
+  File "/usr/local/lib/python3.10/dist-packages/kazoo/client.py", line 1165, in get
+    return self.get_async(path, watch=watch).get()
+  File "/usr/local/lib/python3.10/dist-packages/kazoo/handlers/utils.py", line 86, in get
+    raise self._exception
+kazoo.exceptions.NoNodeError
+2023-04-03 21:44:21,242 - kazoo.handlers.threading - ERROR - Exception in worker queue thread
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/kazoo/recipe/watchers.py", line 162, in _log_func_exception
+    result = self._func(data, stat, event)
+TypeError: PublisherMW.configure.<locals>.watch_leader() takes 2 positional arguments but 3 were given
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/kazoo/handlers/threading.py", line 123, in _thread_worker
+    func()
+  File "/usr/local/lib/python3.10/dist-packages/kazoo/handlers/threading.py", line 212, in <lambda>
+    self.callback_queue.put(lambda: callback.func(*callback.args))
+  File "/usr/local/lib/python3.10/dist-packages/kazoo/recipe/watchers.py", line 209, in _watcher
+    self._get_data(event=event)
+  File "/usr/local/lib/python3.10/dist-packages/kazoo/recipe/watchers.py", line 37, in wrapper
+    return func(*args, **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/kazoo/recipe/watchers.py", line 206, in _get_data
+    self._log_func_exception(data, stat, event)
+  File "/usr/local/lib/python3.10/dist-packages/kazoo/recipe/watchers.py", line 164, in _log_func_exception
+    result = self._func(data, stat)
+  File "/home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/CS6381_MW/PublisherMW.py", line 124, in watch_leader
+    meta = json.loads(self.zk.get("/leader")[0].decode('utf-8'))
+  File "/usr/local/lib/python3.10/dist-packages/kazoo/client.py", line 1165, in get
+    return self.get_async(path, watch=watch).get()
+  File "/usr/local/lib/python3.10/dist-packages/kazoo/handlers/utils.py", line 86, in get
+    raise self._exception
+kazoo.exceptions.NoNodeError
+2023-04-03 21:44:21,243 - kazoo.client - DEBUG - Received EVENT: Watch(type=1, state=3, path='/leader')
+2023-04-03 21:44:21,244 - kazoo.client - DEBUG - Sending request(xid=14): GetData(path='/leader', watcher=<bound method DataWatch._watcher of <kazoo.recipe.watchers.DataWatch object at 0x7fa9ff05e0b0>>)
+2023-04-03 21:44:21,248 - kazoo.client - DEBUG - Received response(xid=14): (b'{"name": "disc1", "rep_addr": "tcp://10.0.0.2:5555", "pub_addr": "tcp://10.0.0.2:5556"}', ZnodeStat(czxid=21, mzxid=21, ctime=1680576261240, mtime=1680576261240, version=0, cversion=0, aversion=0, ephemeralOwner=72058456050696195, dataLength=87, numChildren=0, pzxid=21))
+2023-04-03 21:44:21,248 - PublisherAppln - INFO - BrokerMW::watch_leader: leader node changed
+2023-04-03 21:44:21,248 - kazoo.client - DEBUG - Sending request(xid=15): GetData(path='/leader', watcher=None)
+2023-04-03 21:44:21,251 - kazoo.client - DEBUG - Received response(xid=15): (b'{"name": "disc1", "rep_addr": "tcp://10.0.0.2:5555", "pub_addr": "tcp://10.0.0.2:5556"}', ZnodeStat(czxid=21, mzxid=21, ctime=1680576261240, mtime=1680576261240, version=0, cversion=0, aversion=0, ephemeralOwner=72058456050696195, dataLength=87, numChildren=0, pzxid=21))
+2023-04-03 21:44:21,252 - PublisherAppln - INFO - BrokerMW::watch_leader: disconnecting req and redirecting to new leader
+2023-04-03 21:44:21,252 - PublisherAppln - INFO - Successfully connected to new leader

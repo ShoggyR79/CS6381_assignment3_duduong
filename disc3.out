@@ -1,0 +1,59 @@
+2023-04-03 21:44:07,032 - root INFO - Main - acquire a child logger and then log messages in the child
+2023-04-03 21:44:07,034 - DiscoveryAppln DEBUG - Main: parse command line arguments
+2023-04-03 21:44:07,040 - DiscoveryAppln DEBUG - Main: resetting log level to 20
+2023-04-03 21:44:07,040 - DiscoveryAppln INFO - DiscoveryAppln::configure
+2023-04-03 21:44:07,041 - DiscoveryAppln INFO - DiscoveryMW::configure
+2023-04-03 21:44:07,042 - DiscoveryAppln INFO - DiscoveryMW::ensure_quorum
+2023-04-03 21:44:07,069 - kazoo.client INFO - Connecting to 10.0.0.1(10.0.0.1):2181, use_ssl: False
+2023-04-03 21:44:07,071 - kazoo.client WARNING - Connection dropped: socket connection error: Connection refused
+2023-04-03 21:44:07,175 - kazoo.client INFO - Connecting to 10.0.0.1(10.0.0.1):2181, use_ssl: False
+2023-04-03 21:44:07,176 - kazoo.client WARNING - Connection dropped: socket connection error: Connection refused
+2023-04-03 21:44:07,322 - kazoo.client INFO - Connecting to 10.0.0.1(10.0.0.1):2181, use_ssl: False
+2023-04-03 21:44:07,328 - kazoo.client WARNING - Connection dropped: socket connection error: Connection refused
+2023-04-03 21:44:07,511 - kazoo.client INFO - Connecting to 10.0.0.1(10.0.0.1):2181, use_ssl: False
+2023-04-03 21:44:07,513 - kazoo.client WARNING - Connection dropped: socket connection error: Connection refused
+2023-04-03 21:44:07,774 - kazoo.client INFO - Connecting to 10.0.0.1(10.0.0.1):2181, use_ssl: False
+2023-04-03 21:44:07,777 - kazoo.client WARNING - Connection dropped: socket connection error: Connection refused
+2023-04-03 21:44:08,493 - kazoo.client INFO - Connecting to 10.0.0.1(10.0.0.1):2181, use_ssl: False
+2023-04-03 21:44:08,495 - kazoo.client DEBUG - Sending request(xid=None): Connect(protocol_version=0, last_zxid_seen=0, time_out=10000, session_id=0, passwd=b'\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00', read_only=None)
+2023-04-03 21:44:08,519 - kazoo.client WARNING - Connection dropped: socket connection broken
+2023-04-03 21:44:09,849 - kazoo.client INFO - Connecting to 10.0.0.1(10.0.0.1):2181, use_ssl: False
+2023-04-03 21:44:09,852 - kazoo.client DEBUG - Sending request(xid=None): Connect(protocol_version=0, last_zxid_seen=0, time_out=10000, session_id=0, passwd=b'\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00', read_only=None)
+2023-04-03 21:44:09,859 - kazoo.client INFO - Zookeeper connection established, state: CONNECTED
+2023-04-03 21:44:09,859 - DiscoveryAppln INFO - DiscoveryMW::ensure_quorum: ZK client state = CONNECTED
+2023-04-03 21:44:09,860 - kazoo.client DEBUG - Sending request(xid=1): Create(path='/discovery/disc3', data=b'', acl=[ACL(perms=31, acl_list=['ALL'], id=Id(scheme='world', id='anyone'))], flags=1)
+2023-04-03 21:44:09,869 - kazoo.client DEBUG - Received response(xid=1): '/discovery/disc3'
+2023-04-03 21:44:09,870 - kazoo.client DEBUG - Sending request(xid=2): GetChildren(path='/discovery', watcher=None)
+2023-04-03 21:44:09,873 - kazoo.client DEBUG - Received response(xid=2): ['disc3', 'disc1', 'disc2']
+2023-04-03 21:44:09,873 - DiscoveryAppln INFO - DiscoveryMW::ensure_quorum: quorum_size met, creating leader
+2023-04-03 21:44:09,874 - DiscoveryAppln INFO - DiscoveryMW::create_leader: attempting to create new ephemeral leader
+2023-04-03 21:44:09,874 - kazoo.client DEBUG - Sending request(xid=3): Create(path='/leader', data=b'{"name": "disc3", "rep_addr": "tcp://10.0.0.4:5555", "pub_addr": "tcp://10.0.0.4:5556"}', acl=[ACL(perms=31, acl_list=['ALL'], id=Id(scheme='world', id='anyone'))], flags=1)
+2023-04-03 21:44:09,881 - kazoo.client DEBUG - Received response(xid=3): '/leader'
+2023-04-03 21:44:09,882 - DiscoveryAppln INFO - DiscoveryMW::create_leader: leader created
+2023-04-03 21:44:09,882 - kazoo.client DEBUG - Sending request(xid=4): GetData(path='/leader', watcher=<bound method DataWatch._watcher of <kazoo.recipe.watchers.DataWatch object at 0x7fda2a140d60>>)
+2023-04-03 21:44:09,888 - kazoo.client DEBUG - Received response(xid=4): (b'{"name": "disc3", "rep_addr": "tcp://10.0.0.4:5555", "pub_addr": "tcp://10.0.0.4:5556"}', ZnodeStat(czxid=12, mzxid=12, ctime=1680576249877, mtime=1680576249877, version=0, cversion=0, aversion=0, ephemeralOwner=72058456050696197, dataLength=87, numChildren=0, pzxid=12))
+2023-04-03 21:44:09,889 - kazoo.client DEBUG - Sending request(xid=5): GetData(path='/broker', watcher=<bound method DataWatch._watcher of <kazoo.recipe.watchers.DataWatch object at 0x7fda2a140df0>>)
+2023-04-03 21:44:09,895 - kazoo.client DEBUG - Received error(xid=5) NoNodeError()
+2023-04-03 21:44:09,902 - kazoo.client DEBUG - Sending request(xid=6): Exists(path='/broker', watcher=<bound method DataWatch._watcher of <kazoo.recipe.watchers.DataWatch object at 0x7fda2a140df0>>)
+2023-04-03 21:44:09,908 - kazoo.client DEBUG - Sending request(xid=7): GetChildren(path='/publisher', watcher=<bound method ChildrenWatch._watcher of <kazoo.recipe.watchers.ChildrenWatch object at 0x7fda2a112650>>)
+2023-04-03 21:44:09,914 - kazoo.client DEBUG - Received error(xid=7) NoNodeError()
+2023-04-03 21:44:09,916 - DiscoveryAppln INFO - DiscoveryMW::configure completed
+2023-04-03 21:44:09,916 - DiscoveryAppln INFO - DiscoveryAppln::configure completed
+2023-04-03 21:44:09,916 - DiscoveryAppln INFO - DiscoveryAppln::driver
+2023-04-03 21:44:09,917 - DiscoveryAppln INFO - **********************************
+2023-04-03 21:44:09,917 - DiscoveryAppln INFO - DiscoveryAppln::dump
+2023-04-03 21:44:09,917 - DiscoveryAppln INFO - ------------------------------
+2023-04-03 21:44:09,917 - DiscoveryAppln INFO -      Lookup: Centralized
+2023-04-03 21:44:09,917 - DiscoveryAppln INFO -      Dissemination: Direct
+2023-04-03 21:44:09,918 - DiscoveryAppln INFO - **********************************
+2023-04-03 21:44:09,918 - DiscoveryAppln INFO - DiscoveryMW::event_loop: start
+2023-04-03 21:44:09,918 - DiscoveryAppln INFO - DiscoveryAppln::invoke_operation
+2023-04-03 21:44:09,983 - DiscoveryAppln INFO - DiscoveryMW::handle_request:
+2023-04-03 21:44:09,983 - DiscoveryAppln INFO - DiscoveryAppln::handle_register
+2023-04-03 21:44:09,983 - DiscoveryAppln INFO - DiscoveryAppln::handle_register checking if name is unique
+2023-04-03 21:44:09,984 - DiscoveryAppln INFO - DiscoveryAppln::handle_register assigning user id to info
+2023-04-03 21:44:09,984 - DiscoveryAppln INFO - DiscoveryAppln::handle_register adding topics to publishers
+2023-04-03 21:44:09,984 - DiscoveryAppln INFO - DiscoveryAppln::handle_register increment number of seen publishers
+2023-04-03 21:44:09,984 - DiscoveryAppln INFO - DiscoveryAppln::backup
+2023-04-03 21:44:09,984 - DiscoveryAppln INFO - DiscoveryMW::send_state_to_replica: sending state to replica
+2023-04-03 21:44:09,984 - DiscoveryAppln ERROR - Exception caught in main - Frame 2 (1) does not support the buffer interface.

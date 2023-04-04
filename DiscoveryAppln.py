@@ -60,8 +60,6 @@ class DiscoveryAppln():
         self.state = self.State.INITIALIZE
         self.count_publishers = 0
         self.count_subscribers = 0
-        self.exp_publishers = 0
-        self.exp_subscribers = 0
         self.mw_obj = None
         self.logger = logger
         self.lookup = None
@@ -74,10 +72,9 @@ class DiscoveryAppln():
         try:
             self.logger.info("DiscoveryAppln::configure")
             self.state = self.State.CONFIGURE
-
+            
             # initialize our variables
-            self.exp_publishers = args.exp_publishers
-            self.exp_subscribers = args.exp_subscribers
+
             self.topics_to_publishers = {}
             self.publisher_to_ip = {}
 
@@ -92,6 +89,10 @@ class DiscoveryAppln():
             self.logger.debug(
                 "DiscoveryAppln::configure - setup underlying middleware object")
             self.mw_obj = DiscoveryMW(self.logger)
+            # setting upcall handle
+            self.logger.debug("DiscoveryAppln::driver - setting upcall handle")
+            self.mw_obj.set_upcall_handle(self)
+
             # pass remainder of the args to the m/w object
             self.mw_obj.configure(args)
             self.logger.info("DiscoveryAppln::configure completed")
@@ -105,10 +106,6 @@ class DiscoveryAppln():
             self.logger.info("DiscoveryAppln::driver")
             # dump contents
             self.dump()
-
-            # setting upcall handle
-            self.logger.debug("DiscoveryAppln::driver - setting upcall handle")
-            self.mw_obj.set_upcall_handle(self)
 
             self.state = self.State.ISREADY
 
@@ -143,7 +140,7 @@ class DiscoveryAppln():
                 if (req_info.id in self.publisher_to_ip):
                     raise Exception("Name should be unique")
                 self.logger.info("DiscoveryAppln::handle_register assigning user id to info")
-                self.publisher_to_ip[req_info.id] = req_info
+                self.publisher_to_ip[req_info.id] = {"id": req_info.id, "addr": req_info.addr, "port": req_info.port}
                 self.logger.info("DiscoveryAppln::handle_register adding topics to publishers")
                 for topic in reg_req.topiclist:
                     if topic not in self.topics_to_publishers:
@@ -169,8 +166,6 @@ class DiscoveryAppln():
   
     def isready_request(self):
         self.logger.debug("DiscoveryAppln::isready_request")
-        self.logger.info ("     Expected Subscribers: {}".format (self.exp_subscribers))
-        self.logger.info ("     Expected Publishers: {}".format (self.exp_publishers))
         self.logger.info ("     Count Subscribers: {}".format (self.count_subscribers))
         self.logger.info ("     Count Publishers: {}".format (self.count_publishers))
         status = (self.state == self.State.ISREADY and (self.dissemination!="Broker" or self.broker != None))
@@ -225,12 +220,11 @@ class DiscoveryAppln():
             
             
             
-    def update_state(self, topics_to_publisher, publisher_to_ip, count_pub, count_sub, state):
+    def update_state(self, topics_to_publisher, publisher_to_ip, count_pub, count_sub):
         self.topics_to_publishers = topics_to_publisher
         self.publisher_to_ip = publisher_to_ip
         self.count_publishers = count_pub
         self.count_subscribers = count_sub
-        self.state = state
         
     def dump(self):
         ''' Pretty print '''
@@ -241,8 +235,6 @@ class DiscoveryAppln():
             self.logger.info ("------------------------------")
             self.logger.info ("     Lookup: {}".format (self.lookup))
             self.logger.info ("     Dissemination: {}".format (self.dissemination))
-            self.logger.info ("     Expected Subscribers: {}".format (self.exp_subscribers))
-            self.logger.info ("     Expected Publishers: {}".format (self.exp_publishers))
             self.logger.info ("**********************************")
 
         except Exception as e:
@@ -251,14 +243,11 @@ class DiscoveryAppln():
 def parseCmdLineArgs():
     parser = argparse.ArgumentParser(description="Discovery Application")
 
-    parser.add_argument("-cp", "--exp_publishers", type=int, default=1,
-                        help="Number of publishers to be expected before ready")
-
-    parser.add_argument("-cs", "--exp_subscribers", type=int, default=1,
-                        help="Number of subscribers to be expected before ready")
 
     parser.add_argument("-a", "--addr", default="localhost",
                         help="IP addr of this discovery to advertise (default: localhost)")
+    parser.add_argument ("-n", "--name", default="pub", help="Some name assigned to us. Keep it unique per discovery")
+
 
     parser.add_argument("-p", "--port", type=int, default=5555,
                         help="Port number for underlying discovery ZMQ, default=5557")
@@ -269,7 +258,7 @@ def parseCmdLineArgs():
                         help="Configuration file, default=config.ini")
     parser.add_argument ("-z", "--zookeeper", default="localhost:2181", help="IP Addr:Port combo for the zookeeper service, default is localhost:2181")
 
-
+    
     parser.add_argument("-l", "--loglevel", type=int, default=logging.INFO, choices=[
                         logging.DEBUG, logging.INFO, logging.WARNING, logging.ERROR, logging.CRITICAL], help="logging level, choices 10,20,30,40,50: default 20=logging.INFO")
 

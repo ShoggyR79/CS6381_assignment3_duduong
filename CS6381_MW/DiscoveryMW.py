@@ -100,7 +100,7 @@ class DiscoveryMW():
             self.zk = KazooClient(hosts=args.zookeeper)
             # establishing quorum
             self.quorum = args.quorum
-            self.create_leader(args.name)
+            self.ensure_quorum(args.name)
             self.logger.debug(
                 "DiscoveryMW::configure: ZK client state = {}".format(self.zk.state))
             # if /leader znode gets deleted, we try to create new leader
@@ -110,7 +110,7 @@ class DiscoveryMW():
                 if data is None:
                     self.logger.info(
                         "DiscoveryMW::watch_leader: leader deleted, trying to create new leader")
-                    self.create_leader()
+                    self.create_leader(args.name)
 
             @self.zk.DataWatch("/broker")
             def watch_broker(data, stat):
@@ -127,7 +127,7 @@ class DiscoveryMW():
                 for child in children:
                     path = "/publisher/" + child
                     data, _ = self.zk.get(path)
-                    publishers.push(json.loads(data.decode("utf-8")))
+                    publishers.append(json.loads(data.decode("utf-8")))
                 self.upcall_obj.update_publisher_info(publishers)
             self.logger.info("DiscoveryMW::configure completed")
 
@@ -136,39 +136,46 @@ class DiscoveryMW():
     ###############################################
     # create leader else wait until leader is done
     ###############################################
-
-    def create_leader(self, name):
+    def ensure_quorum(self, name):
         try:
-            self.logger.info("DiscoveryMW::create_leader")
+            self.logger.info("DiscoveryMW::ensure_quorum")
             self.zk.start()
             self.logger.info(
-                "DiscoveryMW::create_leader: ZK client state = {}".format(self.zk.state))
+                "DiscoveryMW::ensure_quorum: ZK client state = {}".format(self.zk.state))
             # create a znode under /discovery to count the number of quorum in while loop
-
             self.zk.create("/discovery/" + name, ephemeral=True, makepath=True)
             while (len(self.zk.get_children("/discovery")) < self.quorum):
                 self.logger.info(
-                    "DiscoveryMW::create_leader: quorum_size not met, waiting for 2s")
+                    "DiscoveryMW::ensure_quorum: quorum_size not met, waiting for 2s")
                 time.sleep(2)
-
-            if self.zk.exists("/leader"):
+            self.logger.info(
+                "DiscoveryMW::ensure_quorum: quorum_size met, creating leader")
+            self.create_leader(name)
+        except Exception as e:
+            raise e
+        
+    def create_leader(self, name):
+        try:
+            try:
                 self.logger.info(
-                    "DiscoveryMW::create_leader: leader exists, connecting to leader through SUB socket")
+                    "DiscoveryMW::create_leader: attempting to create new ephemeral leader")
+                rep_addr = "tcp://" + self.addr + ":" + str(self.port)
+                pub_addr = "tcp://" + self.addr + ":" + str(self.port + 1)
+                meta_str = json.dumps(
+                    {"name": name, "rep_addr": rep_addr, "pub_addr": pub_addr})
+                self.zk.create(
+                    "/leader", value=meta_str.encode("utf-8"), ephemeral=True, makepath=True)
+                self.logger.info("DiscoveryMW::create_leader: leader created")
+            except NodeExistsError:
+                self.logger.info(
+                    "DiscoveryMW::create_leader: leader already exists, connecting to leader through SUB socket")
                 meta = json.loads(self.zk.get("/leader")[0].decode("utf-8"))
                 self.logger.info(
                     "DiscoveryMW::create_leader: leader address = {}".format(meta["pub_addr"]))
                 self.sub.connect(meta["pub_addr"])
                 self.sub.setsockopt_string(zmq.SUBSCRIBE, "backup")
-            else:
-                self.logger.info(
-                    "DiscoveryMW::create_leader: no leader exists, create new ephemeral leader")
-                rep_addr = "tcp://" + self.addr + ":" + str(self.port)
-                pub_addr = "tcp://" + self.addr + ":" + str(self.port + 1)
-                meta_str = json.dumps(
-                    {"rep_addr": rep_addr, "pub_addr": pub_addr})
-                self.zk.create(
-                    "/leader", value=meta_str.encode("utf-8"), ephemeral=True, makepath=True)
-            return
+                return
+            
         except Exception as e:
             raise e
 
@@ -203,7 +210,7 @@ class DiscoveryMW():
             pti = json.loads(data_recv[1].decode("utf-8"))
 
             self.upcall_obj.update_state(
-                ttp, pti, data_recv[2], data_recv[3], data_recv[4])
+                ttp, pti, data_recv[2], data_recv[3])
         except Exception as e:
             raise e
     # handle the poller request:
@@ -339,5 +346,6 @@ class DiscoveryMW():
     def send_state_to_replica(self, topics_to_publisher, publisher_to_ip, count_pub, count_sub, state):
         ttp = json.dumps(topics_to_publisher)
         pti = json.dumps(publisher_to_ip)
-        self.pub.send_multipart(["backup", ttp.encode(
-            "utf-8"), pti.encode("utf-8"), count_pub, count_sub, state])
+        self.logger.info("DiscoveryMW::send_state_to_replica: sending state to replica")
+        self.pub.send_multipart([ ttp.encode(
+            "utf-8"), pti.encode("utf-8"), count_pub, count_sub])
