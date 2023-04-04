@@ -200,30 +200,14 @@ class PublisherAppln ():
         # send a register msg to discovery service
         self.logger.debug ("PublisherAppln::invoke_operation - register with the discovery service")
         self.mw_obj.register (self.name, self.topiclist)
-
+        self.state = self.State.DISSEMINATE
+        return 0
         # Remember that we were invoked by the event loop as part of the upcall.
         # So we are going to return back to it for its next iteration. Because
         # we have just now sent a register request, the very next thing we expect is
         # to receive a response from remote entity. So we need to set the timeout
         # for the next iteration of the event loop to a large num and so return a None.
-        return None
       
-      elif (self.state == self.State.ISREADY):
-        # Now keep checking with the discovery service if we are ready to go
-        #
-        # Note that in the previous version of the code, we had a loop. But now instead
-        # of an explicit loop we are going to go back and forth between the event loop
-        # and the upcall until we receive the go ahead from the discovery service.
-        
-        self.logger.debug ("PublisherAppln::invoke_operation - check if are ready to go")
-        self.mw_obj.is_ready ()  # send the is_ready? request
-
-        # Remember that we were invoked by the event loop as part of the upcall.
-        # So we are going to return back to it for its next iteration. Because
-        # we have just now sent a isready request, the very next thing we expect is
-        # to receive a response from remote entity. So we need to set the timeout
-        # for the next iteration of the event loop to a large num and so return a None.
-        return None
       
       elif (self.state == self.State.DISSEMINATE):
 
@@ -271,67 +255,9 @@ class PublisherAppln ():
     except Exception as e:
       raise e
 
-  ########################################
-  # handle register response method called as part of upcall
-  #
-  # As mentioned in class, the middleware object can do the reading
-  # from socket and deserialization. But it does not know the semantics
-  # of the message and what should be done. So it becomes the job
-  # of the application. Hence this upcall is made to us.
-  ########################################
-  def register_response (self, reg_resp):
-    ''' handle register response '''
-
-    try:
-      self.logger.info ("PublisherAppln::register_response")
-      if (reg_resp.status == discovery_pb2.STATUS_SUCCESS):
-        self.logger.debug ("PublisherAppln::register_response - registration is a success")
-
-        # set our next state to isready so that we can then send the isready message right away
-        self.state = self.State.ISREADY
-        
-        # return a timeout of zero so that the event loop in its next iteration will immediately make
-        # an upcall to us
-        return 0
-      
-      else:
-        self.logger.debug ("PublisherAppln::register_response - registration is a failure with reason {}".format (reg_resp.reason))
-        raise ValueError ("Publisher needs to have unique id")
-
-    except Exception as e:
-      raise e
-
-  ########################################
-  # handle isready response method called as part of upcall
-  #
-  # Also a part of upcall handled by application logic
-  ########################################
-  def isready_response (self, isready_resp):
-    ''' handle isready response '''
-
-    try:
-      self.logger.info ("PublisherAppln::isready_response")
-
-      # Notice how we get that loop effect with the sleep (10)
-      # by an interaction between the event loop and these
-      # upcall methods.
-      if not isready_resp.status:
-        # discovery service is not ready yet
-        self.logger.debug ("PublisherAppln::driver - Not ready yet; check again")
-        time.sleep (10)  # sleep between calls so that we don't make excessive calls
-
-      else:
-        # we got the go ahead
-        # set the state to disseminate
-        self.state = self.State.DISSEMINATE
-        
-      # return timeout of 0 so event loop calls us back in the invoke_operation
-      # method, where we take action based on what state we are in.
-      return 0
-    
-    except Exception as e:
-      raise e
-
+  
+  def set_state(self, state):
+    self.state = state
   ########################################
   # dump the contents of the object 
   ########################################

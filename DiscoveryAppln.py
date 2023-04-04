@@ -207,6 +207,7 @@ class DiscoveryAppln():
         self.broker = broker
         
     def update_publisher_info(self, publishers):
+        self.logger.info("DiscoveryAppln::update_publisher_info - updating publishers")
         self.publisher_to_ip = {}
         self.topics_to_publishers = {}
         for pub in publishers:
@@ -217,6 +218,9 @@ class DiscoveryAppln():
                 if topic not in self.topics_to_publishers:
                     self.topics_to_publishers[topic] = []
                 self.topics_to_publishers[topic].append(info["id"])
+
+        self.logger.info("DiscoveryAppln::update_publisher_info - updated publishers: {}".format(self.publisher_to_ip))
+        self.logger.info("DiscoveryAppln::update_publisher_info - updated topics: {}".format(self.topics_to_publishers))
             
             
             

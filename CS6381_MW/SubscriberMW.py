@@ -204,43 +204,43 @@ class SubscriberMW():
         '''register the appln with the discovery service'''
         try:
             self.logger.info("SubscriberMW: register")
-            # as part of registration with the discovery service, we send
-            # what role we are playing, the list of topics we are publishing,
-            # and our whereabouts, e.g., name, IP and port
+            # # as part of registration with the discovery service, we send
+            # # what role we are playing, the list of topics we are publishing,
+            # # and our whereabouts, e.g., name, IP and port
 
-            # build the registrant info message first.
-            self.logger.debug("SubscriberMW::register - build the Registrant Info")
-            reg_info = discovery_pb2.RegistrantInfo() #allocate
-            reg_info.id = name # our id
-            self.logger.debug("SubscriberMW::register - done building the Registrant Info")
+            # # build the registrant info message first.
+            # self.logger.debug("SubscriberMW::register - build the Registrant Info")
+            # reg_info = discovery_pb2.RegistrantInfo() #allocate
+            # reg_info.id = name # our id
+            # self.logger.debug("SubscriberMW::register - done building the Registrant Info")
             
-            # Next build a RegisterReq message
-            self.logger.debug("SubscriberMW::register - populate the nested register req")
-            register_req = discovery_pb2.RegisterReq() #allocate
-            register_req.role = discovery_pb2.ROLE_SUBSCRIBER # we are a subscriber
+            # # Next build a RegisterReq message
+            # self.logger.debug("SubscriberMW::register - populate the nested register req")
+            # register_req = discovery_pb2.RegisterReq() #allocate
+            # register_req.role = discovery_pb2.ROLE_SUBSCRIBER # we are a subscriber
             
-            register_req.info.CopyFrom(reg_info)
-            register_req.topiclist[:] = topiclist 
-            self.logger.debug("SubscriberMW::register - done populating the nested register req")
+            # register_req.info.CopyFrom(reg_info)
+            # register_req.topiclist[:] = topiclist 
+            # self.logger.debug("SubscriberMW::register - done populating the nested register req")
             
-            # build the outer layer DiscoveryReq message
-            self.logger.debug("SubscriberMW::register - build the outer layer DiscoveryReq message")
+            # # build the outer layer DiscoveryReq message
+            # self.logger.debug("SubscriberMW::register - build the outer layer DiscoveryReq message")
              
-            disc_req = discovery_pb2.DiscoveryReq() #allocate
-            disc_req.msg_type = discovery_pb2.TYPE_REGISTER # we are registering
+            # disc_req = discovery_pb2.DiscoveryReq() #allocate
+            # disc_req.msg_type = discovery_pb2.TYPE_REGISTER # we are registering
             
-            disc_req.register_req.CopyFrom(register_req)
-            self.logger.debug("SubscriberMW::register - done building the outer layer DiscoveryReq message")
+            # disc_req.register_req.CopyFrom(register_req)
+            # self.logger.debug("SubscriberMW::register - done building the outer layer DiscoveryReq message")
             
-            # stringify buffer and print it
-            buf2send = disc_req.SerializeToString()
-            self.logger.debug("Stringified serialized buf = {}".format(buf2send))
+            # # stringify buffer and print it
+            # buf2send = disc_req.SerializeToString()
+            # self.logger.debug("Stringified serialized buf = {}".format(buf2send))
             
-            # send to discovery service
-            self.logger.debug("SubscriberMW::register - send the request to discovery service")
-            self.req.send(buf2send) # send the request to discovery service
+            # # send to discovery service
+            # self.logger.debug("SubscriberMW::register - send the request to discovery service")
+            # self.req.send(buf2send) # send the request to discovery service
             
-            self.logger.info("SubscriberMW::register - sent register message and now wait for reply")
+            # self.logger.info("SubscriberMW::register - sent register message and now wait for reply")
         except Exception as e:
             raise e
 

@@ -119,6 +119,11 @@ class DiscoveryMW():
                         "DiscoveryMW::watch_broker: broker changed, updating broker info")
                     broker_info = json.loads(data.decode("utf-8"))
                     self.upcall_obj.update_broker_info(broker_info)
+            # creating /publisher znode if it doesn't exist
+            try:
+                self.zk.create("/publisher", makepath=True)
+            except NodeExistsError:
+                pass
             @self.zk.ChildrenWatch("/publisher")
             def watch_pubs(children):
                 self.logger.info(
@@ -128,7 +133,9 @@ class DiscoveryMW():
                     path = "/publisher/" + child
                     data, _ = self.zk.get(path)
                     publishers.append(json.loads(data.decode("utf-8")))
+                self.logger.info("DiscoveryMW::watch_pubs: {}".format(publishers))
                 self.upcall_obj.update_publisher_info(publishers)
+                return
             self.logger.info("DiscoveryMW::configure completed")
 
         except Exception as e:

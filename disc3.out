@@ -1,59 +1,109 @@
-2023-04-03 21:44:07,032 - root INFO - Main - acquire a child logger and then log messages in the child
-2023-04-03 21:44:07,034 - DiscoveryAppln DEBUG - Main: parse command line arguments
-2023-04-03 21:44:07,040 - DiscoveryAppln DEBUG - Main: resetting log level to 20
-2023-04-03 21:44:07,040 - DiscoveryAppln INFO - DiscoveryAppln::configure
-2023-04-03 21:44:07,041 - DiscoveryAppln INFO - DiscoveryMW::configure
-2023-04-03 21:44:07,042 - DiscoveryAppln INFO - DiscoveryMW::ensure_quorum
-2023-04-03 21:44:07,069 - kazoo.client INFO - Connecting to 10.0.0.1(10.0.0.1):2181, use_ssl: False
-2023-04-03 21:44:07,071 - kazoo.client WARNING - Connection dropped: socket connection error: Connection refused
-2023-04-03 21:44:07,175 - kazoo.client INFO - Connecting to 10.0.0.1(10.0.0.1):2181, use_ssl: False
-2023-04-03 21:44:07,176 - kazoo.client WARNING - Connection dropped: socket connection error: Connection refused
-2023-04-03 21:44:07,322 - kazoo.client INFO - Connecting to 10.0.0.1(10.0.0.1):2181, use_ssl: False
-2023-04-03 21:44:07,328 - kazoo.client WARNING - Connection dropped: socket connection error: Connection refused
-2023-04-03 21:44:07,511 - kazoo.client INFO - Connecting to 10.0.0.1(10.0.0.1):2181, use_ssl: False
-2023-04-03 21:44:07,513 - kazoo.client WARNING - Connection dropped: socket connection error: Connection refused
-2023-04-03 21:44:07,774 - kazoo.client INFO - Connecting to 10.0.0.1(10.0.0.1):2181, use_ssl: False
-2023-04-03 21:44:07,777 - kazoo.client WARNING - Connection dropped: socket connection error: Connection refused
-2023-04-03 21:44:08,493 - kazoo.client INFO - Connecting to 10.0.0.1(10.0.0.1):2181, use_ssl: False
-2023-04-03 21:44:08,495 - kazoo.client DEBUG - Sending request(xid=None): Connect(protocol_version=0, last_zxid_seen=0, time_out=10000, session_id=0, passwd=b'\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00', read_only=None)
-2023-04-03 21:44:08,519 - kazoo.client WARNING - Connection dropped: socket connection broken
-2023-04-03 21:44:09,849 - kazoo.client INFO - Connecting to 10.0.0.1(10.0.0.1):2181, use_ssl: False
-2023-04-03 21:44:09,852 - kazoo.client DEBUG - Sending request(xid=None): Connect(protocol_version=0, last_zxid_seen=0, time_out=10000, session_id=0, passwd=b'\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00', read_only=None)
-2023-04-03 21:44:09,859 - kazoo.client INFO - Zookeeper connection established, state: CONNECTED
-2023-04-03 21:44:09,859 - DiscoveryAppln INFO - DiscoveryMW::ensure_quorum: ZK client state = CONNECTED
-2023-04-03 21:44:09,860 - kazoo.client DEBUG - Sending request(xid=1): Create(path='/discovery/disc3', data=b'', acl=[ACL(perms=31, acl_list=['ALL'], id=Id(scheme='world', id='anyone'))], flags=1)
-2023-04-03 21:44:09,869 - kazoo.client DEBUG - Received response(xid=1): '/discovery/disc3'
-2023-04-03 21:44:09,870 - kazoo.client DEBUG - Sending request(xid=2): GetChildren(path='/discovery', watcher=None)
-2023-04-03 21:44:09,873 - kazoo.client DEBUG - Received response(xid=2): ['disc3', 'disc1', 'disc2']
-2023-04-03 21:44:09,873 - DiscoveryAppln INFO - DiscoveryMW::ensure_quorum: quorum_size met, creating leader
-2023-04-03 21:44:09,874 - DiscoveryAppln INFO - DiscoveryMW::create_leader: attempting to create new ephemeral leader
-2023-04-03 21:44:09,874 - kazoo.client DEBUG - Sending request(xid=3): Create(path='/leader', data=b'{"name": "disc3", "rep_addr": "tcp://10.0.0.4:5555", "pub_addr": "tcp://10.0.0.4:5556"}', acl=[ACL(perms=31, acl_list=['ALL'], id=Id(scheme='world', id='anyone'))], flags=1)
-2023-04-03 21:44:09,881 - kazoo.client DEBUG - Received response(xid=3): '/leader'
-2023-04-03 21:44:09,882 - DiscoveryAppln INFO - DiscoveryMW::create_leader: leader created
-2023-04-03 21:44:09,882 - kazoo.client DEBUG - Sending request(xid=4): GetData(path='/leader', watcher=<bound method DataWatch._watcher of <kazoo.recipe.watchers.DataWatch object at 0x7fda2a140d60>>)
-2023-04-03 21:44:09,888 - kazoo.client DEBUG - Received response(xid=4): (b'{"name": "disc3", "rep_addr": "tcp://10.0.0.4:5555", "pub_addr": "tcp://10.0.0.4:5556"}', ZnodeStat(czxid=12, mzxid=12, ctime=1680576249877, mtime=1680576249877, version=0, cversion=0, aversion=0, ephemeralOwner=72058456050696197, dataLength=87, numChildren=0, pzxid=12))
-2023-04-03 21:44:09,889 - kazoo.client DEBUG - Sending request(xid=5): GetData(path='/broker', watcher=<bound method DataWatch._watcher of <kazoo.recipe.watchers.DataWatch object at 0x7fda2a140df0>>)
-2023-04-03 21:44:09,895 - kazoo.client DEBUG - Received error(xid=5) NoNodeError()
-2023-04-03 21:44:09,902 - kazoo.client DEBUG - Sending request(xid=6): Exists(path='/broker', watcher=<bound method DataWatch._watcher of <kazoo.recipe.watchers.DataWatch object at 0x7fda2a140df0>>)
-2023-04-03 21:44:09,908 - kazoo.client DEBUG - Sending request(xid=7): GetChildren(path='/publisher', watcher=<bound method ChildrenWatch._watcher of <kazoo.recipe.watchers.ChildrenWatch object at 0x7fda2a112650>>)
-2023-04-03 21:44:09,914 - kazoo.client DEBUG - Received error(xid=7) NoNodeError()
-2023-04-03 21:44:09,916 - DiscoveryAppln INFO - DiscoveryMW::configure completed
-2023-04-03 21:44:09,916 - DiscoveryAppln INFO - DiscoveryAppln::configure completed
-2023-04-03 21:44:09,916 - DiscoveryAppln INFO - DiscoveryAppln::driver
-2023-04-03 21:44:09,917 - DiscoveryAppln INFO - **********************************
-2023-04-03 21:44:09,917 - DiscoveryAppln INFO - DiscoveryAppln::dump
-2023-04-03 21:44:09,917 - DiscoveryAppln INFO - ------------------------------
-2023-04-03 21:44:09,917 - DiscoveryAppln INFO -      Lookup: Centralized
-2023-04-03 21:44:09,917 - DiscoveryAppln INFO -      Dissemination: Direct
-2023-04-03 21:44:09,918 - DiscoveryAppln INFO - **********************************
-2023-04-03 21:44:09,918 - DiscoveryAppln INFO - DiscoveryMW::event_loop: start
-2023-04-03 21:44:09,918 - DiscoveryAppln INFO - DiscoveryAppln::invoke_operation
-2023-04-03 21:44:09,983 - DiscoveryAppln INFO - DiscoveryMW::handle_request:
-2023-04-03 21:44:09,983 - DiscoveryAppln INFO - DiscoveryAppln::handle_register
-2023-04-03 21:44:09,983 - DiscoveryAppln INFO - DiscoveryAppln::handle_register checking if name is unique
-2023-04-03 21:44:09,984 - DiscoveryAppln INFO - DiscoveryAppln::handle_register assigning user id to info
-2023-04-03 21:44:09,984 - DiscoveryAppln INFO - DiscoveryAppln::handle_register adding topics to publishers
-2023-04-03 21:44:09,984 - DiscoveryAppln INFO - DiscoveryAppln::handle_register increment number of seen publishers
-2023-04-03 21:44:09,984 - DiscoveryAppln INFO - DiscoveryAppln::backup
-2023-04-03 21:44:09,984 - DiscoveryAppln INFO - DiscoveryMW::send_state_to_replica: sending state to replica
-2023-04-03 21:44:09,984 - DiscoveryAppln ERROR - Exception caught in main - Frame 2 (1) does not support the buffer interface.
+2023-04-03 22:17:58,754 - root INFO - Main - acquire a child logger and then log messages in the child
+2023-04-03 22:17:58,757 - DiscoveryAppln DEBUG - Main: parse command line arguments
+2023-04-03 22:17:58,764 - DiscoveryAppln DEBUG - Main: resetting log level to 20
+2023-04-03 22:17:58,764 - DiscoveryAppln INFO - DiscoveryAppln::configure
+2023-04-03 22:17:58,765 - DiscoveryAppln INFO - DiscoveryMW::configure
+2023-04-03 22:17:58,768 - DiscoveryAppln INFO - DiscoveryMW::ensure_quorum
+2023-04-03 22:17:58,772 - kazoo.client INFO - Connecting to 10.0.0.1(10.0.0.1):2181, use_ssl: False
+2023-04-03 22:17:58,776 - kazoo.client WARNING - Connection dropped: socket connection error: Connection refused
+2023-04-03 22:17:58,901 - kazoo.client INFO - Connecting to 10.0.0.1(10.0.0.1):2181, use_ssl: False
+2023-04-03 22:17:58,903 - kazoo.client WARNING - Connection dropped: socket connection error: Connection refused
+2023-04-03 22:17:59,226 - kazoo.client INFO - Connecting to 10.0.0.1(10.0.0.1):2181, use_ssl: False
+2023-04-03 22:17:59,230 - kazoo.client WARNING - Connection dropped: socket connection error: Connection refused
+2023-04-03 22:17:59,733 - kazoo.client INFO - Connecting to 10.0.0.1(10.0.0.1):2181, use_ssl: False
+2023-04-03 22:17:59,736 - kazoo.client WARNING - Connection dropped: socket connection error: Connection refused
+2023-04-03 22:18:00,607 - kazoo.client INFO - Connecting to 10.0.0.1(10.0.0.1):2181, use_ssl: False
+2023-04-03 22:18:00,611 - kazoo.client DEBUG - Sending request(xid=None): Connect(protocol_version=0, last_zxid_seen=0, time_out=10000, session_id=0, passwd=b'\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00', read_only=None)
+2023-04-03 22:18:00,650 - kazoo.client WARNING - Connection dropped: socket connection broken
+2023-04-03 22:18:02,431 - kazoo.client INFO - Connecting to 10.0.0.1(10.0.0.1):2181, use_ssl: False
+2023-04-03 22:18:02,433 - kazoo.client DEBUG - Sending request(xid=None): Connect(protocol_version=0, last_zxid_seen=0, time_out=10000, session_id=0, passwd=b'\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00', read_only=None)
+2023-04-03 22:18:02,441 - kazoo.client INFO - Zookeeper connection established, state: CONNECTED
+2023-04-03 22:18:02,441 - DiscoveryAppln INFO - DiscoveryMW::ensure_quorum: ZK client state = CONNECTED
+2023-04-03 22:18:02,441 - kazoo.client DEBUG - Sending request(xid=1): Create(path='/discovery/disc3', data=b'', acl=[ACL(perms=31, acl_list=['ALL'], id=Id(scheme='world', id='anyone'))], flags=1)
+2023-04-03 22:18:02,444 - kazoo.client DEBUG - Received response(xid=1): '/discovery/disc3'
+2023-04-03 22:18:02,444 - kazoo.client DEBUG - Sending request(xid=2): GetChildren(path='/discovery', watcher=None)
+2023-04-03 22:18:02,446 - kazoo.client DEBUG - Received response(xid=2): ['disc3', 'disc1', 'disc2']
+2023-04-03 22:18:02,446 - DiscoveryAppln INFO - DiscoveryMW::ensure_quorum: quorum_size met, creating leader
+2023-04-03 22:18:02,446 - DiscoveryAppln INFO - DiscoveryMW::create_leader: attempting to create new ephemeral leader
+2023-04-03 22:18:02,446 - kazoo.client DEBUG - Sending request(xid=3): Create(path='/leader', data=b'{"name": "disc3", "rep_addr": "tcp://10.0.0.4:5555", "pub_addr": "tcp://10.0.0.4:5556"}', acl=[ACL(perms=31, acl_list=['ALL'], id=Id(scheme='world', id='anyone'))], flags=1)
+2023-04-03 22:18:02,449 - kazoo.client DEBUG - Received response(xid=3): '/leader'
+2023-04-03 22:18:02,449 - DiscoveryAppln INFO - DiscoveryMW::create_leader: leader created
+2023-04-03 22:18:02,449 - kazoo.client DEBUG - Sending request(xid=4): GetData(path='/leader', watcher=<bound method DataWatch._watcher of <kazoo.recipe.watchers.DataWatch object at 0x7f5e83d81030>>)
+2023-04-03 22:18:02,451 - kazoo.client DEBUG - Received response(xid=4): (b'{"name": "disc3", "rep_addr": "tcp://10.0.0.4:5555", "pub_addr": "tcp://10.0.0.4:5556"}', ZnodeStat(czxid=11, mzxid=11, ctime=1680578282447, mtime=1680578282447, version=0, cversion=0, aversion=0, ephemeralOwner=72058589230858244, dataLength=87, numChildren=0, pzxid=11))
+2023-04-03 22:18:02,452 - kazoo.client DEBUG - Sending request(xid=5): GetData(path='/broker', watcher=<bound method DataWatch._watcher of <kazoo.recipe.watchers.DataWatch object at 0x7f5e83d80340>>)
+2023-04-03 22:18:02,453 - kazoo.client DEBUG - Received error(xid=5) NoNodeError()
+2023-04-03 22:18:02,453 - kazoo.client DEBUG - Sending request(xid=6): Exists(path='/broker', watcher=<bound method DataWatch._watcher of <kazoo.recipe.watchers.DataWatch object at 0x7f5e83d80340>>)
+2023-04-03 22:18:02,455 - kazoo.client DEBUG - Sending request(xid=7): Create(path='/publisher', data=b'', acl=[ACL(perms=31, acl_list=['ALL'], id=Id(scheme='world', id='anyone'))], flags=0)
+2023-04-03 22:18:02,457 - kazoo.client DEBUG - Received response(xid=7): '/publisher'
+2023-04-03 22:18:02,458 - kazoo.client DEBUG - Sending request(xid=8): GetChildren(path='/publisher', watcher=<bound method ChildrenWatch._watcher of <kazoo.recipe.watchers.ChildrenWatch object at 0x7f5e83d81540>>)
+2023-04-03 22:18:02,459 - kazoo.client DEBUG - Received response(xid=8): []
+2023-04-03 22:18:02,459 - DiscoveryAppln INFO - DiscoveryMW::watch_pubs: publisher changed, updating publisher info
+2023-04-03 22:18:02,459 - DiscoveryAppln INFO - DiscoveryMW::watch_pubs: []
+2023-04-03 22:18:02,459 - DiscoveryAppln INFO - DiscoveryAppln::update_publisher_info - updating publishers
+2023-04-03 22:18:02,459 - DiscoveryAppln INFO - DiscoveryAppln::update_publisher_info - updated publishers: {}
+2023-04-03 22:18:02,459 - DiscoveryAppln INFO - DiscoveryAppln::update_publisher_info - updated topics: {}
+2023-04-03 22:18:02,459 - DiscoveryAppln INFO - DiscoveryMW::configure completed
+2023-04-03 22:18:02,459 - DiscoveryAppln INFO - DiscoveryAppln::configure completed
+2023-04-03 22:18:02,459 - DiscoveryAppln INFO - DiscoveryAppln::driver
+2023-04-03 22:18:02,460 - DiscoveryAppln INFO - **********************************
+2023-04-03 22:18:02,460 - DiscoveryAppln INFO - DiscoveryAppln::dump
+2023-04-03 22:18:02,460 - DiscoveryAppln INFO - ------------------------------
+2023-04-03 22:18:02,460 - DiscoveryAppln INFO -      Lookup: Centralized
+2023-04-03 22:18:02,460 - DiscoveryAppln INFO -      Dissemination: Direct
+2023-04-03 22:18:02,460 - DiscoveryAppln INFO - **********************************
+2023-04-03 22:18:02,460 - DiscoveryAppln INFO - DiscoveryMW::event_loop: start
+2023-04-03 22:18:02,460 - DiscoveryAppln INFO - DiscoveryAppln::invoke_operation
+2023-04-03 22:18:02,624 - kazoo.client DEBUG - Received EVENT: Watch(type=4, state=3, path='/publisher')
+2023-04-03 22:18:02,624 - kazoo.client DEBUG - Sending request(xid=9): GetChildren(path='/publisher', watcher=<bound method ChildrenWatch._watcher of <kazoo.recipe.watchers.ChildrenWatch object at 0x7f5e83d81540>>)
+2023-04-03 22:18:02,626 - kazoo.client DEBUG - Received response(xid=9): ['pub7']
+2023-04-03 22:18:02,626 - DiscoveryAppln INFO - DiscoveryMW::watch_pubs: publisher changed, updating publisher info
+2023-04-03 22:18:02,626 - kazoo.client DEBUG - Sending request(xid=10): GetData(path='/publisher/pub7', watcher=None)
+2023-04-03 22:18:02,627 - kazoo.client DEBUG - Received response(xid=10): (b'{"id": {"id": "pub7", "addr": "10.0.0.7", "port": 5577}, "topiclist": ["light", "sound", "airquality", "humidity", "temperature"]}', ZnodeStat(czxid=14, mzxid=14, ctime=1680578282621, mtime=1680578282621, version=0, cversion=0, aversion=0, ephemeralOwner=72058589230858245, dataLength=130, numChildren=0, pzxid=14))
+2023-04-03 22:18:02,628 - DiscoveryAppln INFO - DiscoveryMW::watch_pubs: [{'id': {'id': 'pub7', 'addr': '10.0.0.7', 'port': 5577}, 'topiclist': ['light', 'sound', 'airquality', 'humidity', 'temperature']}]
+2023-04-03 22:18:02,628 - DiscoveryAppln INFO - DiscoveryAppln::update_publisher_info - updating publishers
+2023-04-03 22:18:02,628 - DiscoveryAppln INFO - DiscoveryAppln::update_publisher_info - updated publishers: {'pub7': {'id': 'pub7', 'addr': '10.0.0.7', 'port': 5577}}
+2023-04-03 22:18:02,628 - DiscoveryAppln INFO - DiscoveryAppln::update_publisher_info - updated topics: {'light': ['pub7'], 'sound': ['pub7'], 'airquality': ['pub7'], 'humidity': ['pub7'], 'temperature': ['pub7']}
+2023-04-03 22:18:02,786 - kazoo.client DEBUG - Received EVENT: Watch(type=4, state=3, path='/publisher')
+2023-04-03 22:18:02,786 - kazoo.client DEBUG - Sending request(xid=11): GetChildren(path='/publisher', watcher=<bound method ChildrenWatch._watcher of <kazoo.recipe.watchers.ChildrenWatch object at 0x7f5e83d81540>>)
+2023-04-03 22:18:02,789 - kazoo.client DEBUG - Received response(xid=11): ['pub5', 'pub7']
+2023-04-03 22:18:02,789 - DiscoveryAppln INFO - DiscoveryMW::watch_pubs: publisher changed, updating publisher info
+2023-04-03 22:18:02,789 - kazoo.client DEBUG - Sending request(xid=12): GetData(path='/publisher/pub5', watcher=None)
+2023-04-03 22:18:02,790 - kazoo.client DEBUG - Received response(xid=12): (b'{"id": {"id": "pub5", "addr": "10.0.0.5", "port": 5577}, "topiclist": ["humidity", "altitude", "weather", "airquality", "light"]}', ZnodeStat(czxid=15, mzxid=15, ctime=1680578282783, mtime=1680578282783, version=0, cversion=0, aversion=0, ephemeralOwner=72058589230858241, dataLength=129, numChildren=0, pzxid=15))
+2023-04-03 22:18:02,791 - kazoo.client DEBUG - Sending request(xid=13): GetData(path='/publisher/pub7', watcher=None)
+2023-04-03 22:18:02,794 - kazoo.client DEBUG - Received response(xid=13): (b'{"id": {"id": "pub7", "addr": "10.0.0.7", "port": 5577}, "topiclist": ["light", "sound", "airquality", "humidity", "temperature"]}', ZnodeStat(czxid=14, mzxid=14, ctime=1680578282621, mtime=1680578282621, version=0, cversion=0, aversion=0, ephemeralOwner=72058589230858245, dataLength=130, numChildren=0, pzxid=14))
+2023-04-03 22:18:02,794 - DiscoveryAppln INFO - DiscoveryMW::watch_pubs: [{'id': {'id': 'pub5', 'addr': '10.0.0.5', 'port': 5577}, 'topiclist': ['humidity', 'altitude', 'weather', 'airquality', 'light']}, {'id': {'id': 'pub7', 'addr': '10.0.0.7', 'port': 5577}, 'topiclist': ['light', 'sound', 'airquality', 'humidity', 'temperature']}]
+2023-04-03 22:18:02,794 - DiscoveryAppln INFO - DiscoveryAppln::update_publisher_info - updating publishers
+2023-04-03 22:18:02,794 - DiscoveryAppln INFO - DiscoveryAppln::update_publisher_info - updated publishers: {'pub5': {'id': 'pub5', 'addr': '10.0.0.5', 'port': 5577}, 'pub7': {'id': 'pub7', 'addr': '10.0.0.7', 'port': 5577}}
+2023-04-03 22:18:02,794 - DiscoveryAppln INFO - DiscoveryAppln::update_publisher_info - updated topics: {'humidity': ['pub5', 'pub7'], 'altitude': ['pub5'], 'weather': ['pub5'], 'airquality': ['pub5', 'pub7'], 'light': ['pub5', 'pub7'], 'sound': ['pub7'], 'temperature': ['pub7']}
+2023-04-03 22:18:02,863 - kazoo.client DEBUG - Received EVENT: Watch(type=4, state=3, path='/publisher')
+2023-04-03 22:18:02,863 - kazoo.client DEBUG - Sending request(xid=14): GetChildren(path='/publisher', watcher=<bound method ChildrenWatch._watcher of <kazoo.recipe.watchers.ChildrenWatch object at 0x7f5e83d81540>>)
+2023-04-03 22:18:02,864 - kazoo.client DEBUG - Received response(xid=14): ['pub5', 'pub6', 'pub7']
+2023-04-03 22:18:02,864 - DiscoveryAppln INFO - DiscoveryMW::watch_pubs: publisher changed, updating publisher info
+2023-04-03 22:18:02,865 - kazoo.client DEBUG - Sending request(xid=15): GetData(path='/publisher/pub5', watcher=None)
+2023-04-03 22:18:02,866 - kazoo.client DEBUG - Received response(xid=15): (b'{"id": {"id": "pub5", "addr": "10.0.0.5", "port": 5577}, "topiclist": ["humidity", "altitude", "weather", "airquality", "light"]}', ZnodeStat(czxid=15, mzxid=15, ctime=1680578282783, mtime=1680578282783, version=0, cversion=0, aversion=0, ephemeralOwner=72058589230858241, dataLength=129, numChildren=0, pzxid=15))
+2023-04-03 22:18:02,867 - kazoo.client DEBUG - Sending request(xid=16): GetData(path='/publisher/pub6', watcher=None)
+2023-04-03 22:18:02,868 - kazoo.client DEBUG - Received response(xid=16): (b'{"id": {"id": "pub6", "addr": "10.0.0.6", "port": 5577}, "topiclist": ["altitude", "weather", "temperature", "sound", "airquality"]}', ZnodeStat(czxid=18, mzxid=18, ctime=1680578282859, mtime=1680578282859, version=0, cversion=0, aversion=0, ephemeralOwner=72058589230858243, dataLength=132, numChildren=0, pzxid=18))
+2023-04-03 22:18:02,868 - kazoo.client DEBUG - Sending request(xid=17): GetData(path='/publisher/pub7', watcher=None)
+2023-04-03 22:18:02,870 - kazoo.client DEBUG - Received response(xid=17): (b'{"id": {"id": "pub7", "addr": "10.0.0.7", "port": 5577}, "topiclist": ["light", "sound", "airquality", "humidity", "temperature"]}', ZnodeStat(czxid=14, mzxid=14, ctime=1680578282621, mtime=1680578282621, version=0, cversion=0, aversion=0, ephemeralOwner=72058589230858245, dataLength=130, numChildren=0, pzxid=14))
+2023-04-03 22:18:02,870 - DiscoveryAppln INFO - DiscoveryMW::watch_pubs: [{'id': {'id': 'pub5', 'addr': '10.0.0.5', 'port': 5577}, 'topiclist': ['humidity', 'altitude', 'weather', 'airquality', 'light']}, {'id': {'id': 'pub6', 'addr': '10.0.0.6', 'port': 5577}, 'topiclist': ['altitude', 'weather', 'temperature', 'sound', 'airquality']}, {'id': {'id': 'pub7', 'addr': '10.0.0.7', 'port': 5577}, 'topiclist': ['light', 'sound', 'airquality', 'humidity', 'temperature']}]
+2023-04-03 22:18:02,870 - DiscoveryAppln INFO - DiscoveryAppln::update_publisher_info - updating publishers
+2023-04-03 22:18:02,870 - DiscoveryAppln INFO - DiscoveryAppln::update_publisher_info - updated publishers: {'pub5': {'id': 'pub5', 'addr': '10.0.0.5', 'port': 5577}, 'pub6': {'id': 'pub6', 'addr': '10.0.0.6', 'port': 5577}, 'pub7': {'id': 'pub7', 'addr': '10.0.0.7', 'port': 5577}}
+2023-04-03 22:18:02,870 - DiscoveryAppln INFO - DiscoveryAppln::update_publisher_info - updated topics: {'humidity': ['pub5', 'pub7'], 'altitude': ['pub5', 'pub6'], 'weather': ['pub5', 'pub6'], 'airquality': ['pub5', 'pub6', 'pub7'], 'light': ['pub5', 'pub7'], 'temperature': ['pub6', 'pub7'], 'sound': ['pub6', 'pub7']}
+2023-04-03 22:34:55,226 - kazoo.client DEBUG - Received EVENT: Watch(type=4, state=3, path='/publisher')
+2023-04-03 22:34:55,227 - kazoo.client DEBUG - Sending request(xid=18): GetChildren(path='/publisher', watcher=<bound method ChildrenWatch._watcher of <kazoo.recipe.watchers.ChildrenWatch object at 0x7f5e83d81540>>)
+2023-04-03 22:34:55,228 - kazoo.client DEBUG - Received response(xid=18): ['pub5']
+2023-04-03 22:34:55,228 - DiscoveryAppln INFO - DiscoveryMW::watch_pubs: publisher changed, updating publisher info
+2023-04-03 22:34:55,229 - kazoo.client DEBUG - Sending request(xid=19): GetData(path='/publisher/pub5', watcher=None)
+2023-04-03 22:34:55,230 - kazoo.client DEBUG - Received response(xid=19): (b'{"id": {"id": "pub5", "addr": "10.0.0.5", "port": 5577}, "topiclist": ["humidity", "altitude", "weather", "airquality", "light"]}', ZnodeStat(czxid=15, mzxid=15, ctime=1680578282783, mtime=1680578282783, version=0, cversion=0, aversion=0, ephemeralOwner=72058589230858241, dataLength=129, numChildren=0, pzxid=15))
+2023-04-03 22:34:55,231 - DiscoveryAppln INFO - DiscoveryMW::watch_pubs: [{'id': {'id': 'pub5', 'addr': '10.0.0.5', 'port': 5577}, 'topiclist': ['humidity', 'altitude', 'weather', 'airquality', 'light']}]
+2023-04-03 22:34:55,231 - DiscoveryAppln INFO - DiscoveryAppln::update_publisher_info - updating publishers
+2023-04-03 22:34:55,231 - DiscoveryAppln INFO - DiscoveryAppln::update_publisher_info - updated publishers: {'pub5': {'id': 'pub5', 'addr': '10.0.0.5', 'port': 5577}}
+2023-04-03 22:34:55,231 - DiscoveryAppln INFO - DiscoveryAppln::update_publisher_info - updated topics: {'humidity': ['pub5'], 'altitude': ['pub5'], 'weather': ['pub5'], 'airquality': ['pub5'], 'light': ['pub5']}
+2023-04-03 22:34:57,231 - kazoo.client DEBUG - Received EVENT: Watch(type=4, state=3, path='/publisher')
+2023-04-03 22:34:57,231 - kazoo.client DEBUG - Sending request(xid=20): GetChildren(path='/publisher', watcher=<bound method ChildrenWatch._watcher of <kazoo.recipe.watchers.ChildrenWatch object at 0x7f5e83d81540>>)
+2023-04-03 22:34:57,232 - kazoo.client DEBUG - Received response(xid=20): []
+2023-04-03 22:34:57,232 - DiscoveryAppln INFO - DiscoveryMW::watch_pubs: publisher changed, updating publisher info
+2023-04-03 22:34:57,233 - DiscoveryAppln INFO - DiscoveryMW::watch_pubs: []
+2023-04-03 22:34:57,233 - DiscoveryAppln INFO - DiscoveryAppln::update_publisher_info - updating publishers
+2023-04-03 22:34:57,233 - DiscoveryAppln INFO - DiscoveryAppln::update_publisher_info - updated publishers: {}
+2023-04-03 22:34:57,233 - DiscoveryAppln INFO - DiscoveryAppln::update_publisher_info - updated topics: {}
