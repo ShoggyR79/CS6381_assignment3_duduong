@@ -40,10 +40,10 @@ import argparse  # for argument parsing
 import configparser  # for configuration parsing
 import logging  # for logging. Use it in place of print statements.
 import zmq  # ZMQ sockets
-import timeit # for latency measurement
-import signal # for signal handling
-import csv # for csv file writing
-import json 
+import timeit  # for latency measurement
+import signal  # for signal handling
+import csv  # for csv file writing
+import json
 
 from kazoo.client import KazooClient
 from kazoo.exceptions import NodeExistsError, NoNodeError
@@ -70,12 +70,16 @@ class SubscriberMW():
         self.filename = None
         self.zk = None
         self.discovery = None
+
+        self.lookup_method = None
     # configure/initialize
+
     def configure(self, args):
         try:
-            
+
             self.logger.debug("SubscriberMW: configure")
             self.filename = args.filename
+            self.lookup_method = args.lookup_method
             # # First retrieve our advertised IP addr and the subscriber port num
             # self.port = args.port
             # self.addr = args.addr
@@ -105,13 +109,11 @@ class SubscriberMW():
             self.zk.start()
 
             self.set_req()
-            
+
             self.logger.info("SubscriberMW::configure completed")
 
         except Exception as e:
             raise e
-
-   
 
     def set_req(self):
         try:
@@ -119,12 +121,13 @@ class SubscriberMW():
                 time.sleep(1)
             meta = json.loads(self.zk.get("/leader")[0].decode('utf-8'))
             if self.discovery != None:
-                self.logger.info("SubscriberMW::set_req: disconnecting from {}".format(self.discovery))
+                self.logger.info(
+                    "SubscriberMW::set_req: disconnecting from {}".format(self.discovery))
                 self.req.disconnect(self.discovery)
             self.req.connect(meta["rep_addr"])
             self.discovery = meta["rep_addr"]
             self.logger.debug("Successfully connected to leader")
-                
+
         except Exception as e:
             raise e
 
@@ -133,24 +136,34 @@ class SubscriberMW():
         def watch_leader(data, stat):
             self.logger.info("SubscriberMW::watch_leader: leader node changed")
             self.set_req()
-            
+
             return
+
         @self.zk.DataWatch("/broker")
         def watch_broker(data, stat):
             self.logger.info("SubscriberMW::watch_broker: broker node changed")
-            self.upcall_obj.re_lookup()
-        
+            if self.lookup_method == "Broker" and data is not None:
+                meta = json.loads(self.zk.get("/broker")[0].decode('utf-8'))
+                self.subscribe([meta])
+
         @self.zk.ChildrenWatch("/publisher")
         def watch_pubs(children):
-            self.logger.info("SubscriberMW::watch_pubs: publishers changed, sending lookup request")
+            self.logger.info(
+                "SubscriberMW::watch_pubs: publishers changed, re-subscribing")
             # self.set_req()
-            self.upcall_obj.invoke_operation() 
-        
+            if self.lookup_method == "Direct":
+                publishers = []
+                for child in children:
+                    path = "/publisher/" + child
+                    data, _ = self.zk.get(path)
+                    publishers.append(json.loads(data.decode("utf-8")))
+                self.logger.info("DiscoveryMW::watch_pubs: {}".format(publishers))
+                self.upcall_obj.update_publisher_info(publishers)
+
     def event_loop(self, timeout=None):
         try:
             self.logger.debug("SubscriberMW: event_loop - run the event loop")
             while self.handle_events:
-        
 
                 events = dict(self.poller.poll(timeout=(timeout)))
                 # check if a timeout occurred.
@@ -161,7 +174,7 @@ class SubscriberMW():
                     # handle the reply from remote entity and return the result
                     timeout = self.handle_reply()
                 elif self.sub in events:
-                    timeout = self.recv_data() # handle the data
+                    timeout = self.recv_data()  # handle the data
                 else:
                     raise Exception("Unknown event after poll")
             self.logger.info("SubscriberMW: event_loop: out of the event loop")
@@ -192,8 +205,9 @@ class SubscriberMW():
                 # let the appln level object decide what to do
                 timeout = self.upcall_obj.isready_response(
                     disc_resp.isready_resp)
-            elif(disc_resp.msg_type == discovery_pb2.TYPE_LOOKUP_PUB_BY_TOPIC):
-                timeout = self.upcall_obj.lookup_response(disc_resp.lookup_resp.publist)
+            elif (disc_resp.msg_type == discovery_pb2.TYPE_LOOKUP_PUB_BY_TOPIC):
+                timeout = self.upcall_obj.lookup_response(
+                    disc_resp.lookup_resp.publist)
             else:  # anything else is unrecognizable by this object
                 # raise an exception here
                 raise Exception("Unrecognized response message")
@@ -201,121 +215,23 @@ class SubscriberMW():
         except Exception as e:
             raise e
 
-        
-        
-    def register(self, name, topiclist):
-        '''register the appln with the discovery service'''
-        try:
-            self.logger.info("SubscriberMW: register")
-            # # as part of registration with the discovery service, we send
-            # # what role we are playing, the list of topics we are publishing,
-            # # and our whereabouts, e.g., name, IP and port
+    
 
-            # # build the registrant info message first.
-            # self.logger.debug("SubscriberMW::register - build the Registrant Info")
-            # reg_info = discovery_pb2.RegistrantInfo() #allocate
-            # reg_info.id = name # our id
-            # self.logger.debug("SubscriberMW::register - done building the Registrant Info")
-            
-            # # Next build a RegisterReq message
-            # self.logger.debug("SubscriberMW::register - populate the nested register req")
-            # register_req = discovery_pb2.RegisterReq() #allocate
-            # register_req.role = discovery_pb2.ROLE_SUBSCRIBER # we are a subscriber
-            
-            # register_req.info.CopyFrom(reg_info)
-            # register_req.topiclist[:] = topiclist 
-            # self.logger.debug("SubscriberMW::register - done populating the nested register req")
-            
-            # # build the outer layer DiscoveryReq message
-            # self.logger.debug("SubscriberMW::register - build the outer layer DiscoveryReq message")
-             
-            # disc_req = discovery_pb2.DiscoveryReq() #allocate
-            # disc_req.msg_type = discovery_pb2.TYPE_REGISTER # we are registering
-            
-            # disc_req.register_req.CopyFrom(register_req)
-            # self.logger.debug("SubscriberMW::register - done building the outer layer DiscoveryReq message")
-            
-            # # stringify buffer and print it
-            # buf2send = disc_req.SerializeToString()
-            # self.logger.debug("Stringified serialized buf = {}".format(buf2send))
-            
-            # # send to discovery service
-            # self.logger.debug("SubscriberMW::register - send the request to discovery service")
-            # self.req.send(buf2send) # send the request to discovery service
-            
-            # self.logger.info("SubscriberMW::register - sent register message and now wait for reply")
-        except Exception as e:
-            raise e
-
-    def is_ready(self):
-        '''check if the subscriber is ready to receive data'''
-        try:
-            self.logger.debug("SubscriberMW::is_ready")
-            
-            self.logger.debug("SubscriberMW::is_ready - populate the nested IsReady msg")
-            isready_req = discovery_pb2.IsReadyReq() #allocate
-
-            disc_req = discovery_pb2.DiscoveryReq() #allocate discovery req
-            disc_req.msg_type = discovery_pb2.TYPE_ISREADY # we are checking if ready
-            disc_req.isready_req.CopyFrom(isready_req)
-            self.logger.debug("SubscriberMW::is_ready - done populating the nested IsReady msg")
-
-            # stringify buffer and print it
-            buf2send = disc_req.SerializeToString()
-            self.logger.debug("Stringified serialized buf = {}".format(buf2send))
-
-            # send to discovery service
-            self.logger.debug("SubscriberMW::is_ready - send the request to discovery service")
-            self.req.send(buf2send) # send the request to discovery service
-
-            self.logger.info("SubscriberMW::is_ready - sent isready message and now wait for reply")
-        except Exception as e:
-            raise e
-
-    def lookup(self, topiclist):
-        ''' request discovery for list of publishers we care about '''
-        try:
-            self.logger.info("SubscriberMW::lookup")
-            self.logger.debug("SubscriberMW::lookup - setsockopt for each topic")
-            
-            
-            for topic in topiclist:
-                self.sub.setsockopt_string(zmq.SUBSCRIBE, topic)
-            disc_req = discovery_pb2.DiscoveryReq() #allocate
-            disc_req.msg_type = discovery_pb2.TYPE_LOOKUP_PUB_BY_TOPIC # we are looking up
-            lookup_req = discovery_pb2.LookupPubByTopicReq() #allocate
-            lookup_req.topiclist[:] = topiclist
-            disc_req.lookup_req.CopyFrom(lookup_req)
-            self.logger.info("SubscriberMW::lookup - done building lookup request to discovery service")
-            # stringify buffer and print it
-            buf2send = disc_req.SerializeToString()
-            self.logger.debug("Stringified serialized buf = {}".format(buf2send))
-            
-            # send to discovery service
-            self.logger.debug("SubscriberMW::lookup - send the request to discovery service")
-            self.req.send(buf2send) # send the request to discovery service
-            
-            self.logger.info("SubscriberMW::lookup - sent lookup message and now wait for reply")
-        
-        except Exception as e:
-            raise e
-        
     def subscribe(self, publist):
         try:
             with open(self.filename, "w", newline='') as f:
                 writer = csv.writer(f)
                 writer.writerow(["Time", "Latency"])
-            
+
             self.logger.debug("SubscriberMW::subscribe")
             self.start_time = timeit.default_timer()
             for pub in publist:
                 addr = "tcp://" + pub.addr + ":" + str(pub.port)
                 self.sub.connect(addr)
-                #TODO: change setsockopt to subscribe per topic
-                
+
         except Exception as e:
             raise e
-        
+
     def recv_data(self):
         try:
             data = self.sub.recv_multipart()
@@ -328,13 +244,13 @@ class SubscriberMW():
             latency = recv_time - message.timestamp
             data_point = ((recv_time - self.start_time), latency)
             self.write_csv(self.filename, data_point)
-            self.logger.debug("SubscriberMW::recv_data, value = {}: {}- {}".format(timestamp, topic, data))
+            self.logger.debug(
+                "SubscriberMW::recv_data, value = {}: {}- {}".format(timestamp, topic, data))
             # print("Subscriber::recv_data, value = {}: {}- {}".format(timestamp, topic, data))
             # print("Time Received: {} \nLatency = {}".format(recv_time, latency))
         except Exception as e:
             raise e
-   
-        
+
     def set_upcall_handle(self, upcall_obj):
         '''set the upcall object'''
         try:
@@ -347,18 +263,17 @@ class SubscriberMW():
         '''disable the event loop'''
         self.handle_events = False
         # print("writing to file")
-        
+
         #     for x,y in self.latency:
         #         writer.writerow([x,y])
-    
+
     def write_csv(self, file_name, data):
         with open(file_name, "a", newline='') as f:
             writer = csv.writer(f)
             # print(data)
-            x,y = data
-            writer.writerow([x,y])
+            x, y = data
+            writer.writerow([x, y])
 
-    
     # def interrupt_handler(self, signal, frame):
     #     print('Terminating... and printing to file')
     #     self.disable_event_loop()

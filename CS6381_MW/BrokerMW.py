@@ -135,9 +135,16 @@ class BrokerMW():
             self.set_req()
         @self.zk.ChildrenWatch("/publisher")
         def watch_pubs(children):
-            self.logger.info("SubscriberMW::watch_pubs: publishers changed, sending lookup request")
+            self.logger.info("SubscriberMW::watch_pubs: publishers changed, re-subscribing")
             # self.set_req()
-            self.upcall_obj.invoke_operation()
+            if self.lookup_method == "Direct":
+                publishers = []
+                for child in children:
+                    path = "/publisher/" + child
+                    data, _ = self.zk.get(path)
+                    publishers.append(json.loads(data.decode("utf-8")))
+                self.logger.info("DiscoveryMW::watch_pubs: {}".format(publishers))
+                self.upcall_obj.update_publisher_info(publishers)
 
     def broker_leader(self, name):
         try:
@@ -196,100 +203,7 @@ class BrokerMW():
         except Exception as e:
             raise e
         
-    def register(self, name, topiclist):
-        try:
-            self.logger.info("BrokerMW::register")
-            
-            # self.logger.debug("BrokerMW::register: build the info")
-            # reg_info = discovery_pb2.RegistrantInfo()
-            # reg_info.id = name
-            # reg_info.addr = self.addr
-            # reg_info.port = self.port
-            # self.logger.debug("BrokerMW::register: build the request")
-            # register_req = discovery_pb2.RegisterReq()
-            # register_req.role = discovery_pb2.ROLE_BOTH
-            
-            # register_req.info.CopyFrom(reg_info)
-            # register_req.topiclist[:] = topiclist
-            # disc_req = discovery_pb2.DiscoveryReq()
-            # disc_req.msg_type = discovery_pb2.TYPE_REGISTER
-            
-            # disc_req.register_req.CopyFrom(register_req)
-            # self.logger.debug("BrokerMW::register: done building the request")
-
-            # self.logger.debug("BrokerMW::register: send the request")
-            # buf2send = disc_req.SerializeToString()
-            # self.logger.debug("Stringified serialized buffer: %s", buf2send)
-            
-            # self.req.send(buf2send)
-            
-            self.logger.info("BrokerMW::register: done")
-        except Exception as e:
-            raise e
-    def is_ready(self):
-        try:
-            self.logger.info ("BrokerMW::is_ready")
-
-            # we do a similar kind of serialization as we did in the register
-            # message but much simpler as the message format is very simple.
-            # Then send the request to the discovery service
-            
-            # The following code shows serialization using the protobuf generated code.
-            
-            # first build a IsReady message
-            self.logger.debug ("BrokerMW::is_ready - populate the nested IsReady msg")
-            isready_req = discovery_pb2.IsReadyReq ()  # allocate 
-            # actually, there is nothing inside that msg declaration.
-            self.logger.debug ("BrokerMW::is_ready - done populating nested IsReady msg")
-
-            # Build the outer layer Discovery Message
-            self.logger.debug ("BrokerMW::is_ready - build the outer DiscoveryReq message")
-            disc_req = discovery_pb2.DiscoveryReq ()
-            disc_req.msg_type = discovery_pb2.TYPE_ISREADY
-            # It was observed that we cannot directly assign the nested field here.
-            # A way around is to use the CopyFrom method as shown
-            disc_req.isready_req.CopyFrom (isready_req)
-            self.logger.debug ("BrokerMW::is_ready - done building the outer message")
-            
-            # now let us stringify the buffer and print it. This is actually a sequence of bytes and not
-            # a real string
-            buf2send = disc_req.SerializeToString ()
-            self.logger.debug ("Stringified serialized buf = {}".format (buf2send))
-
-            # now send this to our discovery service
-            self.logger.debug ("BrokerMW::is_ready - send stringified buffer to Discovery service")
-            self.req.send (buf2send)  # we use the "send" method of ZMQ that sends the bytes
-            
-            # now go to our event loop to receive a response to this request
-            self.logger.info ("BrokerMW::is_ready - request sent and now wait for reply")
-            
-        except Exception as e:
-            raise e
-        
-    def lookup(self, topiclist):
-        try:
-            self.logger.info("BrokerMW::lookup")
-            self.logger.debug("BrokerMW::lookup - setsockopt for each topic")
-            for topic in topiclist:
-                self.sub.setsockopt_string(zmq.SUBSCRIBE, topic)
-            disc_req = discovery_pb2.DiscoveryReq() #allocate
-            disc_req.msg_type = discovery_pb2.TYPE_LOOKUP_ALL_PUBS # we are looking up
-            lookup_req = discovery_pb2.LookupPubByTopicReq() #allocate
-            lookup_req.topiclist[:] = topiclist
-            disc_req.lookup_req.CopyFrom(lookup_req)
-            self.logger.info("BrokerMW::lookup - done building lookup request to discovery service")
-            # stringify buffer and print it
-            buf2send = disc_req.SerializeToString()
-            self.logger.debug("Stringified serialized buf = {}".format(buf2send))
-            
-            # send to discovery service
-            self.logger.debug("BrokerMW::lookup - send the request to discovery service")
-            self.req.send(buf2send) # send the request to discovery service
-            
-            self.logger.info("BrokerMW::lookup - sent lookup message and now wait for reply")
-        
-        except Exception as e:
-            raise e
+    
     def subscribe(self, publist):
         try:
             self.logger.debug("BrokerMW::subscribe")

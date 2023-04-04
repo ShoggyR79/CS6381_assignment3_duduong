@@ -101,8 +101,7 @@ class BrokerAppln():
             self.logger.info("BrokerAppln::driver - completed")
         except Exception as e:
             raise e
-    def re_lookup(self):
-        self.mw_obj.lookup(self.topiclist)
+   
     def invoke_operation(self):
         try:
             self.logger.info("BrokerAppln::invoke_operation")
@@ -140,42 +139,6 @@ class BrokerAppln():
         except Exception as e:
             raise e
         
-    def register_response(self, reg_resp):
-        '''Handle the register response'''
-        try:
-            self.logger.info("BrokerAppln::register_response")
-            if (reg_resp.status == discovery_pb2.STATUS_SUCCESS):
-                self.logger.debug("BrokerAppln::register_response - SUCCESS")
-                self.state = self.State.LOOKUP
-                
-                return 0
-            else:
-                self.logger.debug("BrokerAppln::register_response - FAILURE with reason {}".format(reg_resp.reason))
-                raise ValueError("Subscriber failed to register with discovery service")
-        except Exception as e:
-            raise e
-        
-        
-    def isready_response(self, isready_resp):
-        '''Handle the is_ready response'''
-        try:
-            self.logger.info("BrokerAppln::is_ready_response")
-            if not isready_resp.status:
-                self.logger.debug("BrokerAppln::driver - Not ready yet; check again")
-                time.sleep(10) # sleep betwen calls
-            else:
-                self.state = self.State.LOOKUP
-            return 0
-        except Exception as e:
-            raise e 
-        
-    def lookup_response(self, publist):
-        # implement in milestone 2
-        self.logger.info("BrokerAppln::lookup_response")
-        self.logger.debug("BrokerAppln::lookup_response - publist: {}".format(publist))
-        self.mw_obj.subscribe(publist)
-        return None
-    
     
     def dump(self):
         try:

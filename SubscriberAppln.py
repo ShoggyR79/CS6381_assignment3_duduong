@@ -97,7 +97,7 @@ class SubscriberAppln():
             self.mw_obj = SubscriberMW(self.logger)
             self.logger.debug("SubscriberAppln::driver - upcall handle")
             self.mw_obj.set_upcall_handle(self)
-            self.mw_obj.configure(args)
+            self.mw_obj.configure(args, self.lookup_method)
             self.logger.info("SubscriberAppln::configure - completed")
             
         except Exception as e:
@@ -132,7 +132,7 @@ class SubscriberAppln():
             elif (self.state == self.State.LOOKUP):
                 self.logger.debug("SubscriberAppln::invoke_operation - send LOOKUP msg to discovery service")
                 # implement in milestone 2
-                self.mw_obj.lookup(self.topiclist)
+                # self.mw_obj.lookup(self.topiclist)
                 return None
             elif (self.state == self.State.COMPLETED):
                 self.logger.debug("SubscriberAppln::invoke_operation - COMPLETED")
@@ -143,48 +143,16 @@ class SubscriberAppln():
                 
         except Exception as e:
             raise e
-    def re_lookup(self):
-        self.logger.info("SubscriberAppln::re_lookup - send LOOKUP msg to discovery service")
-        # sleep for 2 seconds
-        self.mw_obj.lookup(self.topiclist)
+  
 
-    def register_response(self, reg_resp):
-        '''Handle the register response'''
-        try:
-            self.logger.info("SubscriberAppln::register_response")
-            if (reg_resp.status == discovery_pb2.STATUS_SUCCESS):
-                self.logger.debug("SubscriberAppln::register_response - SUCCESS")
-                self.state = self.State.ISREADY
-                
-                return 0
-            else:
-                self.logger.debug("SubscriberAppln::register_response - FAILURE with reason {}".format(reg_resp.reason))
-                raise ValueError("Subscriber failed to register with discovery service")
-        except Exception as e:
-            raise e
-        
-    def isready_response(self, isready_resp):
-        '''Handle the is_ready response'''
-        try:
-            self.logger.info("SubscriberAppln::is_ready_response")
-            if not isready_resp.status:
-                self.logger.debug("SubscriberAppln::driver - Not ready yet; check again")
-                time.sleep(10) # sleep betwen calls
-            else:
-                self.state = self.State.LOOKUP
-            return 0
-        except Exception as e:
-            raise e
-        
-    
-    def lookup_response(self, publist):
-        # implement in milestone 2
-        self.logger.info("SubscriberAppln::lookup_response")
-        self.logger.debug("SubscriberAppln::lookup_response - publist: {}".format(publist))
-        self.mw_obj.subscribe(publist)
-        return None
-
-
+    def update_publishers_info(self, publist):
+        self.logger.info("SubscriberAppln::update_publishers_info")
+        filtered_pubs = []
+        for pub in publist:
+            # if there is any overlap between the topics we are interested in and the topics the publisher is publishing
+            if (set(self.topiclist).intersection(pub.topiclist)):
+                filtered_pubs.append(pub)
+        self.mw_obj.subscribe(filtered_pubs)
     ########################################
     # dump the contents of the object 
     ########################################
