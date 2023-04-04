@@ -126,16 +126,13 @@ class SubscriberAppln():
                 # send a register msg to discovery service
                 self.logger.debug("SubscriberAppln::invoke_operation - send register msg to discovery service")
                 self.mw_obj.register(self.name, self.topiclist)
-                
-                return None
+                self.state = self.State.LOOKUP
+                return 0
             elif (self.state == self.State.LOOKUP):
                 self.logger.debug("SubscriberAppln::invoke_operation - send LOOKUP msg to discovery service")
                 # implement in milestone 2
                 self.mw_obj.lookup(self.topiclist)
                 return None
-            elif (self.state == self.State.ISREADY):
-                self.logger.debug("SubscriberAppln::invoke_operation - ISREADY")
-                self.mw_obj.is_ready()
             elif (self.state == self.State.COMPLETED):
                 self.logger.debug("SubscriberAppln::invoke_operation - COMPLETED")
                 self.mw_obj.disable_event_loop()
