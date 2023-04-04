@@ -120,9 +120,9 @@ class PublisherMW ():
       
       @self.zk.DataWatch("/leader")
       def watch_leader(data, stat):
-        self.logger.info("BrokerMW::watch_leader: leader node changed")
+        self.logger.info("PublisherMW::watch_leader: leader node changed")
         meta = json.loads(self.zk.get("/leader")[0].decode('utf-8'))
-        self.logger.info("BrokerMW::watch_leader: disconnecting req and redirecting to new leader")
+        self.logger.info("PublisherMW::watch_leader: disconnecting req and redirecting to new leader")
         if self.discovery != None:
           self.req.disconnect(self.discovery)
         self.req.connect(meta["rep_addr"])

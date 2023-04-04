@@ -69,7 +69,7 @@ class SubscriberMW():
         # self.reset_time = None
         self.filename = None
         self.zk = None
-
+        self.discovery = None
     # configure/initialize
     def configure(self, args):
         try:
@@ -105,51 +105,54 @@ class SubscriberMW():
             self.zk.start()
 
             self.set_req()
-            @self.zk.DataWatch("/leader")
-            def watch_leader(data, stat):
-                self.logger.info("BrokerMW::watch_leader: leader node changed")
-                meta = json.loads(self.zk.get("/leader")[0].decode('utf-8'))
-                self.logger.info("BrokerMW::watch_leader: disconnecting req and redirecting to new leader")
-                self.req.unbind()
-                self.req.connect(meta["rep_addr"])
-                self.logger.info("Successfully connected to new leader")
-                return
-            @self.zk.DataWatch("/broker")
-            def watch_broker(data, stat):
-                self.logger.info("BrokerMW::watch_broker: broker node changed")
-                self.upcall_obj.re_lookup()
             
-            @self.zk.ChildrenWatch("/publisher")
-            def watch_pubs(children):
-                self.logger.info("BrokerMW::watch_pubs: publishers changed, sending lookup request")
-                self.upcall_obj.re_lookup()
-        
             self.logger.info("SubscriberMW::configure completed")
 
         except Exception as e:
             raise e
 
-    def add_self_to_zk(self, name):
-        self.logger
+   
 
     def set_req(self):
         try:
             while (self.zk.exists("/leader") == None):
                 time.sleep(1)
             meta = json.loads(self.zk.get("/leader")[0].decode('utf-8'))
+            if self.discovery != None:
+                self.logger.info("SubscriberMW::set_req: disconnecting from {}".format(self.discovery))
+                self.req.disconnect(self.discovery)
             self.req.connect(meta["rep_addr"])
+            self.discovery = meta["rep_addr"]
             self.logger.debug("Successfully connected to leader")
                 
         except Exception as e:
             raise e
 
-   
+    def setWatch(self):
+        @self.zk.DataWatch("/leader")
+        def watch_leader(data, stat):
+            self.logger.info("SubscriberMW::watch_leader: leader node changed")
+            self.set_req()
+            
+            return
+        @self.zk.DataWatch("/broker")
+        def watch_broker(data, stat):
+            self.logger.info("SubscriberMW::watch_broker: broker node changed")
+            self.upcall_obj.re_lookup()
+        
+        @self.zk.ChildrenWatch("/publisher")
+        def watch_pubs(children):
+            self.logger.info("SubscriberMW::watch_pubs: publishers changed, sending lookup request")
+            # self.set_req()
+            self.upcall_obj.invoke_operation() 
         
     def event_loop(self, timeout=None):
         try:
             self.logger.debug("SubscriberMW: event_loop - run the event loop")
             while self.handle_events:
-                events = dict(self.poller.poll(timeout=timeout))
+        
+
+                events = dict(self.poller.poll(timeout=(timeout)))
                 # check if a timeout occurred.
                 if not events:
                     # make an upcall ot the generic "invoke_operations"
@@ -325,8 +328,9 @@ class SubscriberMW():
             latency = recv_time - message.timestamp
             data_point = ((recv_time - self.start_time), latency)
             self.write_csv(self.filename, data_point)
-            print("Subscriber::recv_data, value = {}: {}- {}".format(timestamp, topic, data))
-            print("Time Received: {} \nLatency = {}".format(recv_time, latency))
+            self.logger.debug("SubscriberMW::recv_data, value = {}: {}- {}".format(timestamp, topic, data))
+            # print("Subscriber::recv_data, value = {}: {}- {}".format(timestamp, topic, data))
+            # print("Time Received: {} \nLatency = {}".format(recv_time, latency))
         except Exception as e:
             raise e
    
@@ -350,7 +354,7 @@ class SubscriberMW():
     def write_csv(self, file_name, data):
         with open(file_name, "a", newline='') as f:
             writer = csv.writer(f)
-            print(data)
+            # print(data)
             x,y = data
             writer.writerow([x,y])
 

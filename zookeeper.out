@@ -1,127 +1,109 @@
 /usr/bin/java
 ZooKeeper JMX enabled by default
 Using config: /home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/zookeeper/bin/../conf/zoo.cfg
-2023-04-03 22:17:59,926 [myid:] - INFO  [main:QuorumPeerConfig@174] - Reading configuration from: /home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/zookeeper/bin/../conf/zoo.cfg
-2023-04-03 22:17:59,937 [myid:] - INFO  [main:QuorumPeerConfig@444] - clientPortAddress is 0.0.0.0:2181
-2023-04-03 22:17:59,938 [myid:] - INFO  [main:QuorumPeerConfig@448] - secureClientPort is not set
-2023-04-03 22:17:59,938 [myid:] - INFO  [main:QuorumPeerConfig@464] - observerMasterPort is not set
-2023-04-03 22:17:59,938 [myid:] - INFO  [main:QuorumPeerConfig@481] - metricsProvider.className is org.apache.zookeeper.metrics.impl.DefaultMetricsProvider
-2023-04-03 22:17:59,941 [myid:] - INFO  [main:DatadirCleanupManager@78] - autopurge.snapRetainCount set to 3
-2023-04-03 22:17:59,941 [myid:] - INFO  [main:DatadirCleanupManager@79] - autopurge.purgeInterval set to 0
-2023-04-03 22:17:59,942 [myid:] - INFO  [main:DatadirCleanupManager@101] - Purge task is not scheduled.
-2023-04-03 22:17:59,942 [myid:] - WARN  [main:QuorumPeerMain@139] - Either no config or no quorum defined in config, running in standalone mode
-2023-04-03 22:17:59,945 [myid:] - INFO  [main:ManagedUtil@46] - Log4j 1.2 jmx support not found; jmx disabled.
-2023-04-03 22:17:59,946 [myid:] - INFO  [main:QuorumPeerConfig@174] - Reading configuration from: /home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/zookeeper/bin/../conf/zoo.cfg
-2023-04-03 22:17:59,946 [myid:] - INFO  [main:QuorumPeerConfig@444] - clientPortAddress is 0.0.0.0:2181
-2023-04-03 22:17:59,947 [myid:] - INFO  [main:QuorumPeerConfig@448] - secureClientPort is not set
-2023-04-03 22:17:59,947 [myid:] - INFO  [main:QuorumPeerConfig@464] - observerMasterPort is not set
-2023-04-03 22:17:59,947 [myid:] - INFO  [main:QuorumPeerConfig@481] - metricsProvider.className is org.apache.zookeeper.metrics.impl.DefaultMetricsProvider
-2023-04-03 22:17:59,948 [myid:] - INFO  [main:ZooKeeperServerMain@123] - Starting server
-2023-04-03 22:17:59,968 [myid:] - INFO  [main:ServerMetrics@62] - ServerMetrics initialized with provider org.apache.zookeeper.metrics.impl.DefaultMetricsProvider@731f8236
-2023-04-03 22:17:59,975 [myid:] - INFO  [main:DigestAuthenticationProvider@47] - ACL digest algorithm is: SHA1
-2023-04-03 22:17:59,975 [myid:] - INFO  [main:DigestAuthenticationProvider@61] - zookeeper.DigestAuthenticationProvider.enabled = true
-2023-04-03 22:17:59,979 [myid:] - INFO  [main:FileTxnSnapLog@124] - zookeeper.snapshot.trust.empty : false
-2023-04-03 22:18:00,002 [myid:] - INFO  [main:ZookeeperBanner@42] - 
-2023-04-03 22:18:00,003 [myid:] - INFO  [main:ZookeeperBanner@42] -   ______                  _                                          
-2023-04-03 22:18:00,003 [myid:] - INFO  [main:ZookeeperBanner@42] -  |___  /                 | |                                         
-2023-04-03 22:18:00,004 [myid:] - INFO  [main:ZookeeperBanner@42] -     / /    ___     ___   | | __   ___    ___   _ __     ___   _ __   
-2023-04-03 22:18:00,004 [myid:] - INFO  [main:ZookeeperBanner@42] -    / /    / _ \   / _ \  | |/ /  / _ \  / _ \ | '_ \   / _ \ | '__|
-2023-04-03 22:18:00,005 [myid:] - INFO  [main:ZookeeperBanner@42] -   / /__  | (_) | | (_) | |   <  |  __/ |  __/ | |_) | |  __/ | |    
-2023-04-03 22:18:00,006 [myid:] - INFO  [main:ZookeeperBanner@42] -  /_____|  \___/   \___/  |_|\_\  \___|  \___| | .__/   \___| |_|
-2023-04-03 22:18:00,007 [myid:] - INFO  [main:ZookeeperBanner@42] -                                               | |                     
-2023-04-03 22:18:00,008 [myid:] - INFO  [main:ZookeeperBanner@42] -                                               |_|                     
-2023-04-03 22:18:00,019 [myid:] - INFO  [main:ZookeeperBanner@42] - 
-2023-04-03 22:18:00,022 [myid:] - INFO  [main:Environment@98] - Server environment:zookeeper.version=3.7.1-a2fb57c55f8e59cdd76c34b357ad5181df1258d5, built on 2022-05-07 06:45 UTC
-2023-04-03 22:18:00,022 [myid:] - INFO  [main:Environment@98] - Server environment:host.name=duongvm
-2023-04-03 22:18:00,023 [myid:] - INFO  [main:Environment@98] - Server environment:java.version=11.0.18
-2023-04-03 22:18:00,023 [myid:] - INFO  [main:Environment@98] - Server environment:java.vendor=Ubuntu
-2023-04-03 22:18:00,023 [myid:] - INFO  [main:Environment@98] - Server environment:java.home=/usr/lib/jvm/java-11-openjdk-amd64
-2023-04-03 22:18:00,023 [myid:] - INFO  [main:Environment@98] - Server environment:java.class.path=/home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/zookeeper/bin/../zookeeper-server/target/classes:/home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/zookeeper/bin/../build/classes:/home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/zookeeper/bin/../zookeeper-server/target/lib/*.jar:/home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/zookeeper/bin/../build/lib/*.jar:/home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/zookeeper/bin/../lib/zookeeper-prometheus-metrics-3.7.1.jar:/home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/zookeeper/bin/../lib/zookeeper-jute-3.7.1.jar:/home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/zookeeper/bin/../lib/zookeeper-3.7.1.jar:/home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/zookeeper/bin/../lib/snappy-java-1.1.7.7.jar:/home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/zookeeper/bin/../lib/slf4j-reload4j-1.7.35.jar:/home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/zookeeper/bin/../lib/slf4j-api-1.7.35.jar:/home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/zookeeper/bin/../lib/simpleclient_servlet-0.9.0.jar:/home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/zookeeper/bin/../lib/simpleclient_hotspot-0.9.0.jar:/home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/zookeeper/bin/../lib/simpleclient_common-0.9.0.jar:/home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/zookeeper/bin/../lib/simpleclient-0.9.0.jar:/home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/zookeeper/bin/../lib/reload4j-1.2.19.jar:/home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/zookeeper/bin/../lib/netty-transport-native-unix-common-4.1.76.Final.jar:/home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/zookeeper/bin/../lib/netty-transport-native-epoll-4.1.76.Final.jar:/home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/zookeeper/bin/../lib/netty-transport-classes-epoll-4.1.76.Final.jar:/home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/zookeeper/bin/../lib/netty-transport-4.1.76.Final.jar:/home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/zookeeper/bin/../lib/netty-resolver-4.1.76.Final.jar:/home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/zookeeper/bin/../lib/netty-handler-4.1.76.Final.jar:/home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/zookeeper/bin/../lib/netty-common-4.1.76.Final.jar:/home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/zookeeper/bin/../lib/netty-codec-4.1.76.Final.jar:/home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/zookeeper/bin/../lib/netty-buffer-4.1.76.Final.jar:/home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/zookeeper/bin/../lib/metrics-core-4.1.12.1.jar:/home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/zookeeper/bin/../lib/jline-2.14.6.jar:/home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/zookeeper/bin/../lib/jetty-util-ajax-9.4.43.v20210629.jar:/home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/zookeeper/bin/../lib/jetty-util-9.4.43.v20210629.jar:/home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/zookeeper/bin/../lib/jetty-servlet-9.4.43.v20210629.jar:/home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/zookeeper/bin/../lib/jetty-server-9.4.43.v20210629.jar:/home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/zookeeper/bin/../lib/jetty-security-9.4.43.v20210629.jar:/home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/zookeeper/bin/../lib/jetty-io-9.4.43.v20210629.jar:/home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/zookeeper/bin/../lib/jetty-http-9.4.43.v20210629.jar:/home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/zookeeper/bin/../lib/javax.servlet-api-3.1.0.jar:/home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/zookeeper/bin/../lib/jackson-databind-2.13.2.1.jar:/home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/zookeeper/bin/../lib/jackson-core-2.13.2.jar:/home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/zookeeper/bin/../lib/jackson-annotations-2.13.2.jar:/home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/zookeeper/bin/../lib/commons-cli-1.4.jar:/home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/zookeeper/bin/../lib/audience-annotations-0.12.0.jar:/home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/zookeeper/bin/../zookeeper-*.jar:/home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/zookeeper/bin/../zookeeper-server/src/main/resources/lib/*.jar:/home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/zookeeper/bin/../conf:
-2023-04-03 22:18:00,025 [myid:] - INFO  [main:Environment@98] - Server environment:java.library.path=/usr/java/packages/lib:/usr/lib/x86_64-linux-gnu/jni:/lib/x86_64-linux-gnu:/usr/lib/x86_64-linux-gnu:/usr/lib/jni:/lib:/usr/lib
-2023-04-03 22:18:00,026 [myid:] - INFO  [main:Environment@98] - Server environment:java.io.tmpdir=/tmp
-2023-04-03 22:18:00,026 [myid:] - INFO  [main:Environment@98] - Server environment:java.compiler=<NA>
-2023-04-03 22:18:00,026 [myid:] - INFO  [main:Environment@98] - Server environment:os.name=Linux
-2023-04-03 22:18:00,027 [myid:] - INFO  [main:Environment@98] - Server environment:os.arch=amd64
-2023-04-03 22:18:00,027 [myid:] - INFO  [main:Environment@98] - Server environment:os.version=5.19.0-38-generic
-2023-04-03 22:18:00,027 [myid:] - INFO  [main:Environment@98] - Server environment:user.name=root
-2023-04-03 22:18:00,028 [myid:] - INFO  [main:Environment@98] - Server environment:user.home=/root
-2023-04-03 22:18:00,028 [myid:] - INFO  [main:Environment@98] - Server environment:user.dir=/home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong
-2023-04-03 22:18:00,028 [myid:] - INFO  [main:Environment@98] - Server environment:os.memory.free=50MB
-2023-04-03 22:18:00,028 [myid:] - INFO  [main:Environment@98] - Server environment:os.memory.max=1000MB
-2023-04-03 22:18:00,029 [myid:] - INFO  [main:Environment@98] - Server environment:os.memory.total=64MB
-2023-04-03 22:18:00,029 [myid:] - INFO  [main:ZooKeeperServer@138] - zookeeper.enableEagerACLCheck = false
-2023-04-03 22:18:00,029 [myid:] - INFO  [main:ZooKeeperServer@151] - zookeeper.digest.enabled = true
-2023-04-03 22:18:00,030 [myid:] - INFO  [main:ZooKeeperServer@155] - zookeeper.closeSessionTxn.enabled = true
-2023-04-03 22:18:00,030 [myid:] - INFO  [main:ZooKeeperServer@1505] - zookeeper.flushDelay=0
-2023-04-03 22:18:00,030 [myid:] - INFO  [main:ZooKeeperServer@1514] - zookeeper.maxWriteQueuePollTime=0
-2023-04-03 22:18:00,030 [myid:] - INFO  [main:ZooKeeperServer@1523] - zookeeper.maxBatchSize=1000
-2023-04-03 22:18:00,031 [myid:] - INFO  [main:ZooKeeperServer@260] - zookeeper.intBufferStartingSizeBytes = 1024
-2023-04-03 22:18:00,032 [myid:] - INFO  [main:BlueThrottle@141] - Weighed connection throttling is disabled
-2023-04-03 22:18:00,033 [myid:] - INFO  [main:ZooKeeperServer@1306] - minSessionTimeout set to 4000
-2023-04-03 22:18:00,034 [myid:] - INFO  [main:ZooKeeperServer@1315] - maxSessionTimeout set to 40000
-2023-04-03 22:18:00,035 [myid:] - INFO  [main:ResponseCache@45] - getData response cache size is initialized with value 400.
-2023-04-03 22:18:00,035 [myid:] - INFO  [main:ResponseCache@45] - getChildren response cache size is initialized with value 400.
-2023-04-03 22:18:00,037 [myid:] - INFO  [main:RequestPathMetricsCollector@109] - zookeeper.pathStats.slotCapacity = 60
-2023-04-03 22:18:00,037 [myid:] - INFO  [main:RequestPathMetricsCollector@110] - zookeeper.pathStats.slotDuration = 15
-2023-04-03 22:18:00,038 [myid:] - INFO  [main:RequestPathMetricsCollector@111] - zookeeper.pathStats.maxDepth = 6
-2023-04-03 22:18:00,038 [myid:] - INFO  [main:RequestPathMetricsCollector@112] - zookeeper.pathStats.initialDelay = 5
-2023-04-03 22:18:00,039 [myid:] - INFO  [main:RequestPathMetricsCollector@113] - zookeeper.pathStats.delay = 5
-2023-04-03 22:18:00,039 [myid:] - INFO  [main:RequestPathMetricsCollector@114] - zookeeper.pathStats.enabled = false
-2023-04-03 22:18:00,045 [myid:] - INFO  [main:ZooKeeperServer@1542] - The max bytes for all large requests are set to 104857600
-2023-04-03 22:18:00,045 [myid:] - INFO  [main:ZooKeeperServer@1556] - The large request threshold is set to -1
-2023-04-03 22:18:00,046 [myid:] - INFO  [main:AuthenticationHelper@66] - zookeeper.enforce.auth.enabled = false
-2023-04-03 22:18:00,046 [myid:] - INFO  [main:AuthenticationHelper@67] - zookeeper.enforce.auth.schemes = []
-2023-04-03 22:18:00,047 [myid:] - INFO  [main:ZooKeeperServer@361] - Created server with tickTime 2000 minSessionTimeout 4000 maxSessionTimeout 40000 clientPortListenBacklog -1 datadir /tmp/zookeeper/version-2 snapdir /tmp/zookeeper/version-2
-2023-04-03 22:18:00,114 [myid:] - INFO  [main:Log@170] - Logging initialized @1579ms to org.eclipse.jetty.util.log.Slf4jLog
-2023-04-03 22:18:00,346 [myid:] - WARN  [main:ContextHandler@1656] - o.e.j.s.ServletContextHandler@71d44a3{/,null,STOPPED} contextPath ends with /*
-2023-04-03 22:18:00,346 [myid:] - WARN  [main:ContextHandler@1667] - Empty contextPath
-2023-04-03 22:18:00,418 [myid:] - INFO  [main:Server@375] - jetty-9.4.43.v20210629; built: 2021-06-30T11:07:22.254Z; git: 526006ecfa3af7f1a27ef3a288e2bef7ea9dd7e8; jvm 11.0.18+10-post-Ubuntu-0ubuntu122.04
-2023-04-03 22:18:00,496 [myid:] - INFO  [main:DefaultSessionIdManager@334] - DefaultSessionIdManager workerName=node0
-2023-04-03 22:18:00,497 [myid:] - INFO  [main:DefaultSessionIdManager@339] - No SessionScavenger set, using defaults
-2023-04-03 22:18:00,499 [myid:] - INFO  [main:HouseKeeper@132] - node0 Scavenging every 660000ms
-2023-04-03 22:18:00,505 [myid:] - WARN  [main:ConstraintSecurityHandler@759] - ServletContext@o.e.j.s.ServletContextHandler@71d44a3{/,null,STARTING} has uncovered http methods for path: /*
-2023-04-03 22:18:00,518 [myid:] - INFO  [main:ContextHandler@915] - Started o.e.j.s.ServletContextHandler@71d44a3{/,null,AVAILABLE}
-2023-04-03 22:18:00,550 [myid:] - INFO  [main:AbstractConnector@331] - Started ServerConnector@52e6fdee{HTTP/1.1, (http/1.1)}{0.0.0.0:8080}
-2023-04-03 22:18:00,550 [myid:] - INFO  [main:Server@415] - Started @2016ms
-2023-04-03 22:18:00,551 [myid:] - INFO  [main:JettyAdminServer@190] - Started AdminServer on address 0.0.0.0, port 8080 and command URL /commands
-2023-04-03 22:18:00,559 [myid:] - INFO  [main:ServerCnxnFactory@169] - Using org.apache.zookeeper.server.NIOServerCnxnFactory as server connection factory
-2023-04-03 22:18:00,560 [myid:] - WARN  [main:ServerCnxnFactory@309] - maxCnxns is not configured, using default value 0.
-2023-04-03 22:18:00,566 [myid:] - INFO  [main:NIOServerCnxnFactory@652] - Configuring NIO connection handler with 10s sessionless connection timeout, 1 selector thread(s), 8 worker threads, and 64 kB direct buffers.
-2023-04-03 22:18:00,569 [myid:] - INFO  [main:NIOServerCnxnFactory@660] - binding to port 0.0.0.0/0.0.0.0:2181
-2023-04-03 22:18:00,627 [myid:] - INFO  [main:WatchManagerFactory@42] - Using org.apache.zookeeper.server.watch.WatchManager as watch manager
-2023-04-03 22:18:00,628 [myid:] - INFO  [main:WatchManagerFactory@42] - Using org.apache.zookeeper.server.watch.WatchManager as watch manager
-2023-04-03 22:18:00,632 [myid:] - INFO  [main:ZKDatabase@133] - zookeeper.snapshotSizeFactor = 0.33
-2023-04-03 22:18:00,632 [myid:] - INFO  [main:ZKDatabase@153] - zookeeper.commitLogCount=500
-2023-04-03 22:18:00,635 [myid:] - WARN  [NIOWorkerThread-1:NIOServerCnxn@380] - Close of session 0x0
-java.io.IOException: ZooKeeperServer not running
-	at org.apache.zookeeper.server.NIOServerCnxn.readLength(NIOServerCnxn.java:554)
-	at org.apache.zookeeper.server.NIOServerCnxn.doIO(NIOServerCnxn.java:339)
-	at org.apache.zookeeper.server.NIOServerCnxnFactory$IOWorkRequest.doWork(NIOServerCnxnFactory.java:508)
-	at org.apache.zookeeper.server.WorkerService$ScheduledWorkRequest.run(WorkerService.java:154)
-	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1128)
-	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:628)
-	at java.base/java.lang.Thread.run(Thread.java:829)
-2023-04-03 22:18:00,646 [myid:] - INFO  [main:SnapStream@61] - zookeeper.snapshot.compression.method = CHECKED
-2023-04-03 22:18:00,648 [myid:] - INFO  [main:FileTxnSnapLog@479] - Snapshotting: 0x0 to /tmp/zookeeper/version-2/snapshot.0
-2023-04-03 22:18:00,653 [myid:] - INFO  [main:ZKDatabase@290] - Snapshot loaded in 20 ms, highest zxid is 0x0, digest is 1371985504
-2023-04-03 22:18:00,655 [myid:] - INFO  [main:FileTxnSnapLog@479] - Snapshotting: 0x0 to /tmp/zookeeper/version-2/snapshot.0
-2023-04-03 22:18:00,657 [myid:] - INFO  [main:ZooKeeperServer@543] - Snapshot taken in 1 ms
-2023-04-03 22:18:00,667 [myid:] - INFO  [ProcessThread(sid:0 cport:2181)::PrepRequestProcessor@137] - PrepRequestProcessor (sid:0) started, reconfigEnabled=false
-2023-04-03 22:18:00,667 [myid:] - INFO  [main:RequestThrottler@75] - zookeeper.request_throttler.shutdownTimeout = 10000
-2023-04-03 22:18:00,676 [myid:] - WARN  [NIOWorkerThread-2:NIOServerCnxn@380] - Close of session 0x0
-java.io.IOException: ZooKeeperServer not running
-	at org.apache.zookeeper.server.NIOServerCnxn.readLength(NIOServerCnxn.java:554)
-	at org.apache.zookeeper.server.NIOServerCnxn.doIO(NIOServerCnxn.java:339)
-	at org.apache.zookeeper.server.NIOServerCnxnFactory$IOWorkRequest.doWork(NIOServerCnxnFactory.java:508)
-	at org.apache.zookeeper.server.WorkerService$ScheduledWorkRequest.run(WorkerService.java:154)
-	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1128)
-	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:628)
-	at java.base/java.lang.Thread.run(Thread.java:829)
-2023-04-03 22:18:00,697 [myid:] - INFO  [main:ContainerManager@84] - Using checkIntervalMs=60000 maxPerMinute=10000 maxNeverUsedIntervalMs=0
-2023-04-03 22:18:00,702 [myid:] - INFO  [main:ZKAuditProvider@42] - ZooKeeper audit is disabled.
-2023-04-03 22:18:00,717 [myid:] - INFO  [SyncThread:0:FileTxnLog@284] - Creating new log file: log.1
-2023-04-03 22:34:46,672 [myid:] - WARN  [NIOWorkerThread-6:NIOServerCnxn@371] - Unexpected exception
-EndOfStreamException: Unable to read additional data from client, it probably closed the socket: address = /10.0.0.5:50786, session = 0x10000e7b61f0001
+2023-04-04 16:05:24,294 [myid:] - INFO  [main:QuorumPeerConfig@174] - Reading configuration from: /home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/zookeeper/bin/../conf/zoo.cfg
+2023-04-04 16:05:24,299 [myid:] - INFO  [main:QuorumPeerConfig@444] - clientPortAddress is 0.0.0.0:2181
+2023-04-04 16:05:24,300 [myid:] - INFO  [main:QuorumPeerConfig@448] - secureClientPort is not set
+2023-04-04 16:05:24,300 [myid:] - INFO  [main:QuorumPeerConfig@464] - observerMasterPort is not set
+2023-04-04 16:05:24,300 [myid:] - INFO  [main:QuorumPeerConfig@481] - metricsProvider.className is org.apache.zookeeper.metrics.impl.DefaultMetricsProvider
+2023-04-04 16:05:24,301 [myid:] - INFO  [main:DatadirCleanupManager@78] - autopurge.snapRetainCount set to 3
+2023-04-04 16:05:24,302 [myid:] - INFO  [main:DatadirCleanupManager@79] - autopurge.purgeInterval set to 0
+2023-04-04 16:05:24,302 [myid:] - INFO  [main:DatadirCleanupManager@101] - Purge task is not scheduled.
+2023-04-04 16:05:24,302 [myid:] - WARN  [main:QuorumPeerMain@139] - Either no config or no quorum defined in config, running in standalone mode
+2023-04-04 16:05:24,303 [myid:] - INFO  [main:ManagedUtil@46] - Log4j 1.2 jmx support not found; jmx disabled.
+2023-04-04 16:05:24,304 [myid:] - INFO  [main:QuorumPeerConfig@174] - Reading configuration from: /home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/zookeeper/bin/../conf/zoo.cfg
+2023-04-04 16:05:24,304 [myid:] - INFO  [main:QuorumPeerConfig@444] - clientPortAddress is 0.0.0.0:2181
+2023-04-04 16:05:24,304 [myid:] - INFO  [main:QuorumPeerConfig@448] - secureClientPort is not set
+2023-04-04 16:05:24,304 [myid:] - INFO  [main:QuorumPeerConfig@464] - observerMasterPort is not set
+2023-04-04 16:05:24,304 [myid:] - INFO  [main:QuorumPeerConfig@481] - metricsProvider.className is org.apache.zookeeper.metrics.impl.DefaultMetricsProvider
+2023-04-04 16:05:24,305 [myid:] - INFO  [main:ZooKeeperServerMain@123] - Starting server
+2023-04-04 16:05:24,314 [myid:] - INFO  [main:ServerMetrics@62] - ServerMetrics initialized with provider org.apache.zookeeper.metrics.impl.DefaultMetricsProvider@731f8236
+2023-04-04 16:05:24,317 [myid:] - INFO  [main:DigestAuthenticationProvider@47] - ACL digest algorithm is: SHA1
+2023-04-04 16:05:24,317 [myid:] - INFO  [main:DigestAuthenticationProvider@61] - zookeeper.DigestAuthenticationProvider.enabled = true
+2023-04-04 16:05:24,319 [myid:] - INFO  [main:FileTxnSnapLog@124] - zookeeper.snapshot.trust.empty : false
+2023-04-04 16:05:24,328 [myid:] - INFO  [main:ZookeeperBanner@42] - 
+2023-04-04 16:05:24,328 [myid:] - INFO  [main:ZookeeperBanner@42] -   ______                  _                                          
+2023-04-04 16:05:24,328 [myid:] - INFO  [main:ZookeeperBanner@42] -  |___  /                 | |                                         
+2023-04-04 16:05:24,328 [myid:] - INFO  [main:ZookeeperBanner@42] -     / /    ___     ___   | | __   ___    ___   _ __     ___   _ __   
+2023-04-04 16:05:24,328 [myid:] - INFO  [main:ZookeeperBanner@42] -    / /    / _ \   / _ \  | |/ /  / _ \  / _ \ | '_ \   / _ \ | '__|
+2023-04-04 16:05:24,329 [myid:] - INFO  [main:ZookeeperBanner@42] -   / /__  | (_) | | (_) | |   <  |  __/ |  __/ | |_) | |  __/ | |    
+2023-04-04 16:05:24,329 [myid:] - INFO  [main:ZookeeperBanner@42] -  /_____|  \___/   \___/  |_|\_\  \___|  \___| | .__/   \___| |_|
+2023-04-04 16:05:24,329 [myid:] - INFO  [main:ZookeeperBanner@42] -                                               | |                     
+2023-04-04 16:05:24,329 [myid:] - INFO  [main:ZookeeperBanner@42] -                                               |_|                     
+2023-04-04 16:05:24,329 [myid:] - INFO  [main:ZookeeperBanner@42] - 
+2023-04-04 16:05:24,331 [myid:] - INFO  [main:Environment@98] - Server environment:zookeeper.version=3.7.1-a2fb57c55f8e59cdd76c34b357ad5181df1258d5, built on 2022-05-07 06:45 UTC
+2023-04-04 16:05:24,331 [myid:] - INFO  [main:Environment@98] - Server environment:host.name=duongvm
+2023-04-04 16:05:24,331 [myid:] - INFO  [main:Environment@98] - Server environment:java.version=11.0.18
+2023-04-04 16:05:24,331 [myid:] - INFO  [main:Environment@98] - Server environment:java.vendor=Ubuntu
+2023-04-04 16:05:24,334 [myid:] - INFO  [main:Environment@98] - Server environment:java.home=/usr/lib/jvm/java-11-openjdk-amd64
+2023-04-04 16:05:24,335 [myid:] - INFO  [main:Environment@98] - Server environment:java.class.path=/home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/zookeeper/bin/../zookeeper-server/target/classes:/home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/zookeeper/bin/../build/classes:/home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/zookeeper/bin/../zookeeper-server/target/lib/*.jar:/home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/zookeeper/bin/../build/lib/*.jar:/home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/zookeeper/bin/../lib/zookeeper-prometheus-metrics-3.7.1.jar:/home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/zookeeper/bin/../lib/zookeeper-jute-3.7.1.jar:/home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/zookeeper/bin/../lib/zookeeper-3.7.1.jar:/home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/zookeeper/bin/../lib/snappy-java-1.1.7.7.jar:/home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/zookeeper/bin/../lib/slf4j-reload4j-1.7.35.jar:/home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/zookeeper/bin/../lib/slf4j-api-1.7.35.jar:/home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/zookeeper/bin/../lib/simpleclient_servlet-0.9.0.jar:/home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/zookeeper/bin/../lib/simpleclient_hotspot-0.9.0.jar:/home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/zookeeper/bin/../lib/simpleclient_common-0.9.0.jar:/home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/zookeeper/bin/../lib/simpleclient-0.9.0.jar:/home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/zookeeper/bin/../lib/reload4j-1.2.19.jar:/home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/zookeeper/bin/../lib/netty-transport-native-unix-common-4.1.76.Final.jar:/home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/zookeeper/bin/../lib/netty-transport-native-epoll-4.1.76.Final.jar:/home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/zookeeper/bin/../lib/netty-transport-classes-epoll-4.1.76.Final.jar:/home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/zookeeper/bin/../lib/netty-transport-4.1.76.Final.jar:/home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/zookeeper/bin/../lib/netty-resolver-4.1.76.Final.jar:/home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/zookeeper/bin/../lib/netty-handler-4.1.76.Final.jar:/home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/zookeeper/bin/../lib/netty-common-4.1.76.Final.jar:/home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/zookeeper/bin/../lib/netty-codec-4.1.76.Final.jar:/home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/zookeeper/bin/../lib/netty-buffer-4.1.76.Final.jar:/home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/zookeeper/bin/../lib/metrics-core-4.1.12.1.jar:/home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/zookeeper/bin/../lib/jline-2.14.6.jar:/home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/zookeeper/bin/../lib/jetty-util-ajax-9.4.43.v20210629.jar:/home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/zookeeper/bin/../lib/jetty-util-9.4.43.v20210629.jar:/home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/zookeeper/bin/../lib/jetty-servlet-9.4.43.v20210629.jar:/home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/zookeeper/bin/../lib/jetty-server-9.4.43.v20210629.jar:/home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/zookeeper/bin/../lib/jetty-security-9.4.43.v20210629.jar:/home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/zookeeper/bin/../lib/jetty-io-9.4.43.v20210629.jar:/home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/zookeeper/bin/../lib/jetty-http-9.4.43.v20210629.jar:/home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/zookeeper/bin/../lib/javax.servlet-api-3.1.0.jar:/home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/zookeeper/bin/../lib/jackson-databind-2.13.2.1.jar:/home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/zookeeper/bin/../lib/jackson-core-2.13.2.jar:/home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/zookeeper/bin/../lib/jackson-annotations-2.13.2.jar:/home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/zookeeper/bin/../lib/commons-cli-1.4.jar:/home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/zookeeper/bin/../lib/audience-annotations-0.12.0.jar:/home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/zookeeper/bin/../zookeeper-*.jar:/home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/zookeeper/bin/../zookeeper-server/src/main/resources/lib/*.jar:/home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/zookeeper/bin/../conf:
+2023-04-04 16:05:24,335 [myid:] - INFO  [main:Environment@98] - Server environment:java.library.path=/usr/java/packages/lib:/usr/lib/x86_64-linux-gnu/jni:/lib/x86_64-linux-gnu:/usr/lib/x86_64-linux-gnu:/usr/lib/jni:/lib:/usr/lib
+2023-04-04 16:05:24,336 [myid:] - INFO  [main:Environment@98] - Server environment:java.io.tmpdir=/tmp
+2023-04-04 16:05:24,336 [myid:] - INFO  [main:Environment@98] - Server environment:java.compiler=<NA>
+2023-04-04 16:05:24,336 [myid:] - INFO  [main:Environment@98] - Server environment:os.name=Linux
+2023-04-04 16:05:24,336 [myid:] - INFO  [main:Environment@98] - Server environment:os.arch=amd64
+2023-04-04 16:05:24,336 [myid:] - INFO  [main:Environment@98] - Server environment:os.version=5.19.0-38-generic
+2023-04-04 16:05:24,336 [myid:] - INFO  [main:Environment@98] - Server environment:user.name=root
+2023-04-04 16:05:24,336 [myid:] - INFO  [main:Environment@98] - Server environment:user.home=/root
+2023-04-04 16:05:24,336 [myid:] - INFO  [main:Environment@98] - Server environment:user.dir=/home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong
+2023-04-04 16:05:24,336 [myid:] - INFO  [main:Environment@98] - Server environment:os.memory.free=49MB
+2023-04-04 16:05:24,336 [myid:] - INFO  [main:Environment@98] - Server environment:os.memory.max=1000MB
+2023-04-04 16:05:24,337 [myid:] - INFO  [main:Environment@98] - Server environment:os.memory.total=64MB
+2023-04-04 16:05:24,337 [myid:] - INFO  [main:ZooKeeperServer@138] - zookeeper.enableEagerACLCheck = false
+2023-04-04 16:05:24,337 [myid:] - INFO  [main:ZooKeeperServer@151] - zookeeper.digest.enabled = true
+2023-04-04 16:05:24,337 [myid:] - INFO  [main:ZooKeeperServer@155] - zookeeper.closeSessionTxn.enabled = true
+2023-04-04 16:05:24,337 [myid:] - INFO  [main:ZooKeeperServer@1505] - zookeeper.flushDelay=0
+2023-04-04 16:05:24,337 [myid:] - INFO  [main:ZooKeeperServer@1514] - zookeeper.maxWriteQueuePollTime=0
+2023-04-04 16:05:24,337 [myid:] - INFO  [main:ZooKeeperServer@1523] - zookeeper.maxBatchSize=1000
+2023-04-04 16:05:24,338 [myid:] - INFO  [main:ZooKeeperServer@260] - zookeeper.intBufferStartingSizeBytes = 1024
+2023-04-04 16:05:24,339 [myid:] - INFO  [main:BlueThrottle@141] - Weighed connection throttling is disabled
+2023-04-04 16:05:24,340 [myid:] - INFO  [main:ZooKeeperServer@1306] - minSessionTimeout set to 4000
+2023-04-04 16:05:24,340 [myid:] - INFO  [main:ZooKeeperServer@1315] - maxSessionTimeout set to 40000
+2023-04-04 16:05:24,341 [myid:] - INFO  [main:ResponseCache@45] - getData response cache size is initialized with value 400.
+2023-04-04 16:05:24,341 [myid:] - INFO  [main:ResponseCache@45] - getChildren response cache size is initialized with value 400.
+2023-04-04 16:05:24,363 [myid:] - INFO  [main:RequestPathMetricsCollector@109] - zookeeper.pathStats.slotCapacity = 60
+2023-04-04 16:05:24,363 [myid:] - INFO  [main:RequestPathMetricsCollector@110] - zookeeper.pathStats.slotDuration = 15
+2023-04-04 16:05:24,363 [myid:] - INFO  [main:RequestPathMetricsCollector@111] - zookeeper.pathStats.maxDepth = 6
+2023-04-04 16:05:24,363 [myid:] - INFO  [main:RequestPathMetricsCollector@112] - zookeeper.pathStats.initialDelay = 5
+2023-04-04 16:05:24,363 [myid:] - INFO  [main:RequestPathMetricsCollector@113] - zookeeper.pathStats.delay = 5
+2023-04-04 16:05:24,363 [myid:] - INFO  [main:RequestPathMetricsCollector@114] - zookeeper.pathStats.enabled = false
+2023-04-04 16:05:24,365 [myid:] - INFO  [main:ZooKeeperServer@1542] - The max bytes for all large requests are set to 104857600
+2023-04-04 16:05:24,365 [myid:] - INFO  [main:ZooKeeperServer@1556] - The large request threshold is set to -1
+2023-04-04 16:05:24,370 [myid:] - INFO  [main:AuthenticationHelper@66] - zookeeper.enforce.auth.enabled = false
+2023-04-04 16:05:24,371 [myid:] - INFO  [main:AuthenticationHelper@67] - zookeeper.enforce.auth.schemes = []
+2023-04-04 16:05:24,371 [myid:] - INFO  [main:ZooKeeperServer@361] - Created server with tickTime 2000 minSessionTimeout 4000 maxSessionTimeout 40000 clientPortListenBacklog -1 datadir /tmp/zookeeper/version-2 snapdir /tmp/zookeeper/version-2
+2023-04-04 16:05:24,411 [myid:] - INFO  [main:Log@170] - Logging initialized @955ms to org.eclipse.jetty.util.log.Slf4jLog
+2023-04-04 16:05:24,481 [myid:] - WARN  [main:ContextHandler@1656] - o.e.j.s.ServletContextHandler@71d44a3{/,null,STOPPED} contextPath ends with /*
+2023-04-04 16:05:24,481 [myid:] - WARN  [main:ContextHandler@1667] - Empty contextPath
+2023-04-04 16:05:24,501 [myid:] - INFO  [main:Server@375] - jetty-9.4.43.v20210629; built: 2021-06-30T11:07:22.254Z; git: 526006ecfa3af7f1a27ef3a288e2bef7ea9dd7e8; jvm 11.0.18+10-post-Ubuntu-0ubuntu122.04
+2023-04-04 16:05:24,546 [myid:] - INFO  [main:DefaultSessionIdManager@334] - DefaultSessionIdManager workerName=node0
+2023-04-04 16:05:24,547 [myid:] - INFO  [main:DefaultSessionIdManager@339] - No SessionScavenger set, using defaults
+2023-04-04 16:05:24,548 [myid:] - INFO  [main:HouseKeeper@132] - node0 Scavenging every 600000ms
+2023-04-04 16:05:24,551 [myid:] - WARN  [main:ConstraintSecurityHandler@759] - ServletContext@o.e.j.s.ServletContextHandler@71d44a3{/,null,STARTING} has uncovered http methods for path: /*
+2023-04-04 16:05:24,559 [myid:] - INFO  [main:ContextHandler@915] - Started o.e.j.s.ServletContextHandler@71d44a3{/,null,AVAILABLE}
+2023-04-04 16:05:24,569 [myid:] - INFO  [main:AbstractConnector@331] - Started ServerConnector@52e6fdee{HTTP/1.1, (http/1.1)}{0.0.0.0:8080}
+2023-04-04 16:05:24,573 [myid:] - INFO  [main:Server@415] - Started @1113ms
+2023-04-04 16:05:24,573 [myid:] - INFO  [main:JettyAdminServer@190] - Started AdminServer on address 0.0.0.0, port 8080 and command URL /commands
+2023-04-04 16:05:24,576 [myid:] - INFO  [main:ServerCnxnFactory@169] - Using org.apache.zookeeper.server.NIOServerCnxnFactory as server connection factory
+2023-04-04 16:05:24,577 [myid:] - WARN  [main:ServerCnxnFactory@309] - maxCnxns is not configured, using default value 0.
+2023-04-04 16:05:24,578 [myid:] - INFO  [main:NIOServerCnxnFactory@652] - Configuring NIO connection handler with 10s sessionless connection timeout, 1 selector thread(s), 8 worker threads, and 64 kB direct buffers.
+2023-04-04 16:05:24,579 [myid:] - INFO  [main:NIOServerCnxnFactory@660] - binding to port 0.0.0.0/0.0.0.0:2181
+2023-04-04 16:05:24,590 [myid:] - INFO  [main:WatchManagerFactory@42] - Using org.apache.zookeeper.server.watch.WatchManager as watch manager
+2023-04-04 16:05:24,590 [myid:] - INFO  [main:WatchManagerFactory@42] - Using org.apache.zookeeper.server.watch.WatchManager as watch manager
+2023-04-04 16:05:24,592 [myid:] - INFO  [main:ZKDatabase@133] - zookeeper.snapshotSizeFactor = 0.33
+2023-04-04 16:05:24,593 [myid:] - INFO  [main:ZKDatabase@153] - zookeeper.commitLogCount=500
+2023-04-04 16:05:24,597 [myid:] - INFO  [main:SnapStream@61] - zookeeper.snapshot.compression.method = CHECKED
+2023-04-04 16:05:24,597 [myid:] - INFO  [main:FileTxnSnapLog@479] - Snapshotting: 0x0 to /tmp/zookeeper/version-2/snapshot.0
+2023-04-04 16:05:24,601 [myid:] - INFO  [main:ZKDatabase@290] - Snapshot loaded in 8 ms, highest zxid is 0x0, digest is 1371985504
+2023-04-04 16:05:24,602 [myid:] - INFO  [main:FileTxnSnapLog@479] - Snapshotting: 0x0 to /tmp/zookeeper/version-2/snapshot.0
+2023-04-04 16:05:24,602 [myid:] - INFO  [main:ZooKeeperServer@543] - Snapshot taken in 1 ms
+2023-04-04 16:05:24,610 [myid:] - INFO  [main:RequestThrottler@75] - zookeeper.request_throttler.shutdownTimeout = 10000
+2023-04-04 16:05:24,609 [myid:] - INFO  [ProcessThread(sid:0 cport:2181)::PrepRequestProcessor@137] - PrepRequestProcessor (sid:0) started, reconfigEnabled=false
+2023-04-04 16:05:24,632 [myid:] - INFO  [main:ContainerManager@84] - Using checkIntervalMs=60000 maxPerMinute=10000 maxNeverUsedIntervalMs=0
+2023-04-04 16:05:24,633 [myid:] - INFO  [main:ZKAuditProvider@42] - ZooKeeper audit is disabled.
+2023-04-04 16:05:24,791 [myid:] - INFO  [SyncThread:0:FileTxnLog@284] - Creating new log file: log.1
+2023-04-04 16:05:25,151 [myid:] - WARN  [NIOWorkerThread-5:NIOServerCnxn@371] - Unexpected exception
+EndOfStreamException: Unable to read additional data from client, it probably closed the socket: address = /10.0.0.3:45490, session = 0x10002186d450007
 	at org.apache.zookeeper.server.NIOServerCnxn.handleFailedRead(NIOServerCnxn.java:170)
 	at org.apache.zookeeper.server.NIOServerCnxn.doIO(NIOServerCnxn.java:333)
 	at org.apache.zookeeper.server.NIOServerCnxnFactory$IOWorkRequest.doWork(NIOServerCnxnFactory.java:508)
@@ -129,8 +111,8 @@ EndOfStreamException: Unable to read additional data from client, it probably cl
 	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1128)
 	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:628)
 	at java.base/java.lang.Thread.run(Thread.java:829)
-2023-04-03 22:34:46,709 [myid:] - WARN  [NIOWorkerThread-3:NIOServerCnxn@371] - Unexpected exception
-EndOfStreamException: Unable to read additional data from client, it probably closed the socket: address = /10.0.0.7:55078, session = 0x10000e7b61f0005
+2023-04-04 16:05:25,156 [myid:] - WARN  [NIOWorkerThread-6:NIOServerCnxn@371] - Unexpected exception
+EndOfStreamException: Unable to read additional data from client, it probably closed the socket: address = /10.0.0.8:52792, session = 0x10002186d450008
 	at org.apache.zookeeper.server.NIOServerCnxn.handleFailedRead(NIOServerCnxn.java:170)
 	at org.apache.zookeeper.server.NIOServerCnxn.doIO(NIOServerCnxn.java:333)
 	at org.apache.zookeeper.server.NIOServerCnxnFactory$IOWorkRequest.doWork(NIOServerCnxnFactory.java:508)
@@ -138,8 +120,8 @@ EndOfStreamException: Unable to read additional data from client, it probably cl
 	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1128)
 	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:628)
 	at java.base/java.lang.Thread.run(Thread.java:829)
-2023-04-03 22:34:46,869 [myid:] - WARN  [NIOWorkerThread-7:NIOServerCnxn@371] - Unexpected exception
-EndOfStreamException: Unable to read additional data from client, it probably closed the socket: address = /10.0.0.6:34280, session = 0x10000e7b61f0003
+2023-04-04 16:05:25,904 [myid:] - WARN  [NIOWorkerThread-1:NIOServerCnxn@371] - Unexpected exception
+EndOfStreamException: Unable to read additional data from client, it probably closed the socket: address = /10.0.0.10:53910, session = 0x10002186d450003
 	at org.apache.zookeeper.server.NIOServerCnxn.handleFailedRead(NIOServerCnxn.java:170)
 	at org.apache.zookeeper.server.NIOServerCnxn.doIO(NIOServerCnxn.java:333)
 	at org.apache.zookeeper.server.NIOServerCnxnFactory$IOWorkRequest.doWork(NIOServerCnxnFactory.java:508)
@@ -147,6 +129,16 @@ EndOfStreamException: Unable to read additional data from client, it probably cl
 	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1128)
 	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:628)
 	at java.base/java.lang.Thread.run(Thread.java:829)
-2023-04-03 22:34:55,221 [myid:] - INFO  [SessionTracker:ZooKeeperServer@628] - Expiring session 0x10000e7b61f0005, timeout of 10000ms exceeded
-2023-04-03 22:34:55,222 [myid:] - INFO  [SessionTracker:ZooKeeperServer@628] - Expiring session 0x10000e7b61f0003, timeout of 10000ms exceeded
-2023-04-03 22:34:57,224 [myid:] - INFO  [SessionTracker:ZooKeeperServer@628] - Expiring session 0x10000e7b61f0001, timeout of 10000ms exceeded
+2023-04-04 16:05:26,076 [myid:] - WARN  [NIOWorkerThread-6:NIOServerCnxn@371] - Unexpected exception
+EndOfStreamException: Unable to read additional data from client, it probably closed the socket: address = /10.0.0.9:47908, session = 0x10002186d450006
+	at org.apache.zookeeper.server.NIOServerCnxn.handleFailedRead(NIOServerCnxn.java:170)
+	at org.apache.zookeeper.server.NIOServerCnxn.doIO(NIOServerCnxn.java:333)
+	at org.apache.zookeeper.server.NIOServerCnxnFactory$IOWorkRequest.doWork(NIOServerCnxnFactory.java:508)
+	at org.apache.zookeeper.server.WorkerService$ScheduledWorkRequest.run(WorkerService.java:154)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1128)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:628)
+	at java.base/java.lang.Thread.run(Thread.java:829)
+2023-04-04 16:05:35,335 [myid:] - INFO  [SessionTracker:ZooKeeperServer@628] - Expiring session 0x10002186d450008, timeout of 10000ms exceeded
+2023-04-04 16:05:35,336 [myid:] - INFO  [SessionTracker:ZooKeeperServer@628] - Expiring session 0x10002186d450007, timeout of 10000ms exceeded
+2023-04-04 16:05:37,336 [myid:] - INFO  [SessionTracker:ZooKeeperServer@628] - Expiring session 0x10002186d450006, timeout of 10000ms exceeded
+2023-04-04 16:05:37,336 [myid:] - INFO  [SessionTracker:ZooKeeperServer@628] - Expiring session 0x10002186d450003, timeout of 10000ms exceeded

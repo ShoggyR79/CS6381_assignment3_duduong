@@ -1,0 +1,54 @@
+2023-04-04 16:05:23,772 - INFO - Main - acquire a child logger
+2023-04-04 16:05:23,772 - DEBUG - Main: parse command line arguments
+2023-04-04 16:05:23,778 - DEBUG - Main: resetting log level to 20
+2023-04-04 16:05:23,778 - INFO - SubscriberAppln::configure
+2023-04-04 16:05:23,783 - INFO - Connecting to 10.0.0.1(10.0.0.1):2181, use_ssl: False
+2023-04-04 16:05:23,786 - WARNING - Connection dropped: socket connection error: Connection refused
+2023-04-04 16:05:23,911 - INFO - Connecting to 10.0.0.1(10.0.0.1):2181, use_ssl: False
+2023-04-04 16:05:23,912 - WARNING - Connection dropped: socket connection error: Connection refused
+2023-04-04 16:05:24,236 - INFO - Connecting to 10.0.0.1(10.0.0.1):2181, use_ssl: False
+2023-04-04 16:05:24,237 - WARNING - Connection dropped: socket connection error: Connection refused
+2023-04-04 16:05:24,869 - INFO - Connecting to 10.0.0.1(10.0.0.1):2181, use_ssl: False
+2023-04-04 16:05:24,870 - DEBUG - Sending request(xid=None): Connect(protocol_version=0, last_zxid_seen=0, time_out=10000, session_id=0, passwd=b'\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00', read_only=None)
+2023-04-04 16:05:24,874 - INFO - Zookeeper connection established, state: CONNECTED
+2023-04-04 16:05:24,874 - DEBUG - Sending request(xid=1): Exists(path='/leader', watcher=None)
+2023-04-04 16:05:25,877 - DEBUG - Sending request(xid=2): Exists(path='/leader', watcher=None)
+2023-04-04 16:05:25,878 - DEBUG - Received response(xid=2): ZnodeStat(czxid=14, mzxid=14, ctime=1680642325037, mtime=1680642325037, version=0, cversion=0, aversion=0, ephemeralOwner=72059897973637127, dataLength=87, numChildren=0, pzxid=14)
+2023-04-04 16:05:25,879 - DEBUG - Sending request(xid=3): GetData(path='/leader', watcher=None)
+2023-04-04 16:05:25,879 - DEBUG - Received response(xid=3): (b'{"name": "disc2", "rep_addr": "tcp://10.0.0.3:5555", "pub_addr": "tcp://10.0.0.3:5556"}', ZnodeStat(czxid=14, mzxid=14, ctime=1680642325037, mtime=1680642325037, version=0, cversion=0, aversion=0, ephemeralOwner=72059897973637127, dataLength=87, numChildren=0, pzxid=14))
+2023-04-04 16:05:25,880 - INFO - SubscriberMW::configure completed
+2023-04-04 16:05:25,880 - INFO - SubscriberAppln::configure - completed
+2023-04-04 16:05:25,880 - INFO - SubscriberAppln::driver
+2023-04-04 16:05:25,880 - INFO - **********************************
+2023-04-04 16:05:25,880 - INFO - PublisherAppln::dump
+2023-04-04 16:05:25,880 - INFO - ------------------------------
+2023-04-04 16:05:25,880 - INFO -      Name: sub3
+2023-04-04 16:05:25,880 - INFO -      Lookup: Centralized
+2023-04-04 16:05:25,880 - INFO -      Dissemination: Broker
+2023-04-04 16:05:25,880 - INFO -      Num Topics: 5
+2023-04-04 16:05:25,880 - INFO -      TopicList: ['airquality', 'pressure', 'location', 'light', 'temperature']
+2023-04-04 16:05:25,880 - INFO - **********************************
+2023-04-04 16:05:25,880 - DEBUG - Sending request(xid=4): GetData(path='/leader', watcher=<bound method DataWatch._watcher of <kazoo.recipe.watchers.DataWatch object at 0x7f083ee636a0>>)
+2023-04-04 16:05:25,882 - DEBUG - Received response(xid=4): (b'{"name": "disc2", "rep_addr": "tcp://10.0.0.3:5555", "pub_addr": "tcp://10.0.0.3:5556"}', ZnodeStat(czxid=14, mzxid=14, ctime=1680642325037, mtime=1680642325037, version=0, cversion=0, aversion=0, ephemeralOwner=72059897973637127, dataLength=87, numChildren=0, pzxid=14))
+2023-04-04 16:05:25,882 - INFO - SubscriberMW::watch_leader: leader node changed
+2023-04-04 16:05:25,882 - DEBUG - Sending request(xid=5): Exists(path='/leader', watcher=None)
+2023-04-04 16:05:25,883 - DEBUG - Received response(xid=5): ZnodeStat(czxid=14, mzxid=14, ctime=1680642325037, mtime=1680642325037, version=0, cversion=0, aversion=0, ephemeralOwner=72059897973637127, dataLength=87, numChildren=0, pzxid=14)
+2023-04-04 16:05:25,883 - DEBUG - Sending request(xid=6): GetData(path='/leader', watcher=None)
+2023-04-04 16:05:25,884 - DEBUG - Received response(xid=6): (b'{"name": "disc2", "rep_addr": "tcp://10.0.0.3:5555", "pub_addr": "tcp://10.0.0.3:5556"}', ZnodeStat(czxid=14, mzxid=14, ctime=1680642325037, mtime=1680642325037, version=0, cversion=0, aversion=0, ephemeralOwner=72059897973637127, dataLength=87, numChildren=0, pzxid=14))
+2023-04-04 16:05:25,884 - INFO - SubscriberMW::set_req: disconnecting from tcp://10.0.0.3:5555
+2023-04-04 16:05:25,885 - DEBUG - Sending request(xid=7): GetData(path='/broker', watcher=<bound method DataWatch._watcher of <kazoo.recipe.watchers.DataWatch object at 0x7f083ee63c70>>)
+2023-04-04 16:05:25,886 - DEBUG - Received response(xid=7): (b'{"id": "broker1", "addr": "10.0.0.11", "port": 7777}', ZnodeStat(czxid=18, mzxid=18, ctime=1680642325569, mtime=1680642325569, version=0, cversion=0, aversion=0, ephemeralOwner=72059897973637129, dataLength=52, numChildren=0, pzxid=18))
+2023-04-04 16:05:25,886 - INFO - SubscriberMW::watch_broker: broker node changed
+2023-04-04 16:05:25,886 - INFO - SubscriberAppln::re_lookup - send LOOKUP msg to discovery service
+2023-04-04 16:05:25,886 - INFO - SubscriberMW::lookup
+2023-04-04 16:05:25,886 - INFO - SubscriberMW::lookup - done building lookup request to discovery service
+2023-04-04 16:05:25,886 - INFO - SubscriberMW::lookup - sent lookup message and now wait for reply
+2023-04-04 16:05:25,886 - DEBUG - Sending request(xid=8): GetChildren(path='/publisher', watcher=<bound method ChildrenWatch._watcher of <kazoo.recipe.watchers.ChildrenWatch object at 0x7f083ee63cd0>>)
+2023-04-04 16:05:25,887 - DEBUG - Received response(xid=8): ['pub5', 'pub6']
+2023-04-04 16:05:25,887 - INFO - SubscriberMW::watch_pubs: publishers changed, sending lookup request
+2023-04-04 16:05:25,887 - INFO - SubscriberAppln::invoke_operation
+2023-04-04 16:05:25,887 - INFO - SubscriberMW: register
+2023-04-04 16:05:25,887 - INFO - SubscriberAppln::invoke_operation
+2023-04-04 16:05:25,888 - INFO - SubscriberMW::lookup
+2023-04-04 16:05:25,888 - INFO - SubscriberMW::lookup - done building lookup request to discovery service
+2023-04-04 16:05:25,888 - ERROR - Exception caught in main - Operation cannot be accomplished in current state

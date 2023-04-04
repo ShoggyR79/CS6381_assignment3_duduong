@@ -108,7 +108,7 @@ class DiscoveryAppln():
             self.dump()
 
             self.state = self.State.ISREADY
-
+            self.mw_obj.setWatch()
             self.mw_obj.event_loop(timeout=0)
 
             self.logger.info("DiscoveryAppln::driver completed")
@@ -172,12 +172,12 @@ class DiscoveryAppln():
         self.mw_obj.is_ready_reply(status)
         return None
         
-    def lookup_pub_by_topic_request(self, topiclist, broker):
+    def lookup_pub_by_topic_request(self, topiclist, from_broker):
         try:
 
             publist = []
-            self.logger.info("DiscoveryAppln::lookup_pub_by_topic_reqest")
-            if (self.dissemination == "Broker" and not broker):
+            self.logger.info("DiscoveryAppln::lookup_pub_by_topic_request - {}".format)
+            if (self.dissemination == "Broker" and not from_broker):
                 publist.append(self.broker)
                 return self.mw_obj.lookup_pub_by_topic_reply(publist)
             for topic in topiclist:
@@ -190,7 +190,7 @@ class DiscoveryAppln():
                     pub_info = self.publisher_to_ip[publisher]
                     
                     publist.append(pub_info)
-            self.logger.info("DiscoveryAppln::lookup_pub_by_topic_reqest - returning publist")
+            self.logger.info("DiscoveryAppln::lookup_pub_by_topic_request - returning publist {}".format(publist))
             self.mw_obj.lookup_pub_by_topic_reply(publist)
             return None
         except Exception as e:
@@ -204,6 +204,7 @@ class DiscoveryAppln():
             raise e
         
     def update_broker_info(self, broker):
+        self.logger.info("DiscoveryAppln::update_broker_info - updating broker to {}".format(broker))   
         self.broker = broker
         
     def update_publisher_info(self, publishers):

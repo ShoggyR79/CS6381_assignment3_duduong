@@ -53,6 +53,7 @@ class BrokerMW():
         self.upcall_obj = None # handle to appln obj to handle appln-specific data
         self.handle_events = True # in general we keep going thru the event loop
         self.zk = None # handle to zookeeper client
+        self.discovery = None
         
     ########################################
     # configure/initialize
@@ -86,10 +87,7 @@ class BrokerMW():
             self.poller.register(self.sub, zmq.POLLIN)
             
             
-            # connect to the discovery service
-            self.logger.debug("BrokerMW::configure: connect to the discovery service")
-            connect_str = "tcp://" + args.discovery
-            self.req.connect(connect_str)
+            
             
             # need to do both publisher and subscriber binding
             self.logger.debug("BrokerMW::configure: bind to the PUB")
@@ -98,25 +96,49 @@ class BrokerMW():
             
             self.logger.debug("BrokerMW::configure: creating ZK client")
             self.zk = KazooClient(hosts=args.zookeeper)
+            self.zk.start()
             self.broker_leader(args.name)
-            @self.zk.DataWatch("/broker")
-            def watch_broker(self, data, stat):
-                if data is None:
-                    self.logger.info("BrokerMW::watch_broker: broker node deleted, attempting to become leader")
-                    self.broker_leader()
-                    
-            @self.zk.DataWatch("/leader")
-            def watch_leader(self, data, stat):
-                self.logger.info("BrokerMW::watch_leader: leader node changed")
-                meta = json.loads(self.zk.get("/leader")[0].decode('utf-8'))
-                self.logger.info("BrokerMW::watch_leader: disconnecting req and redirecting to new leader")
-                self.req.disconnect()
-                self.req.connect(meta["rep_addr"])
-                self.logger.info("Successfully connected to new leader")
+
+            self.set_req()
+            
             self.logger.info("BrokerMW::configure completed")
         except Exception as e:
             raise e
     
+    def set_req(self):
+        try:
+            while (self.zk.exists("/leader") == None):
+                time.sleep(1)
+            meta = json.loads(self.zk.get("/leader")[0].decode('utf-8'))
+            if self.discovery != None:
+                self.logger.info("SubscriberMW::set_req: disconnecting from {}".format(self.discovery))
+                self.req.disconnect(self.discovery)
+            self.req.connect(meta["rep_addr"])
+            self.discovery = meta["rep_addr"]
+            self.logger.debug("Successfully connected to leader")
+                
+        except Exception as e:
+            raise e
+
+
+
+    def setWatch(self):
+        @self.zk.DataWatch("/broker")
+        def watch_broker(data, stat):
+            if data is None:
+                self.logger.info("BrokerMW::watch_broker: broker node deleted, attempting to become leader")
+                self.broker_leader()
+                
+        @self.zk.DataWatch("/leader")
+        def watch_leader(data, stat):
+            self.logger.info("BrokerMW::watch_leader: leader node changed")
+            self.set_req()
+        @self.zk.ChildrenWatch("/publisher")
+        def watch_pubs(children):
+            self.logger.info("SubscriberMW::watch_pubs: publishers changed, sending lookup request")
+            # self.set_req()
+            self.upcall_obj.invoke_operation()
+
     def broker_leader(self, name):
         try:
             self.logger.info("BrokerMW::broker_leader")
@@ -124,8 +146,9 @@ class BrokerMW():
             self.logger.info("BrokerMW::broker_leader: connected to zookeeper")
             try:
                 self.logger.info("BrokerMW::broker_leader: broker node does not exist, creating self")
-                addr = "tcp://" + self.addr + ":" + str(self.port)
-                self.zk.create("/broker", value=addr.encode('utf-8'), ephemeral=True, makepath=True)
+                addr = {"id": name, "addr": self.addr, "port": self.port}
+                data = json.dumps(addr)
+                self.zk.create("/broker", value=data.encode('utf-8'), ephemeral=True, makepath=True)
             except NodeExistsError:
                 self.logger.info("BrokerMW::broker_leader: broker node exists")
                 
@@ -133,7 +156,7 @@ class BrokerMW():
         except Exception as e:
             raise e
     
-        
+    
         
     ########################################
     # run event loop 
@@ -177,28 +200,28 @@ class BrokerMW():
         try:
             self.logger.info("BrokerMW::register")
             
-            self.logger.debug("BrokerMW::register: build the info")
-            reg_info = discovery_pb2.RegistrantInfo()
-            reg_info.id = name
-            reg_info.addr = self.addr
-            reg_info.port = self.port
-            self.logger.debug("BrokerMW::register: build the request")
-            register_req = discovery_pb2.RegisterReq()
-            register_req.role = discovery_pb2.ROLE_BOTH
+            # self.logger.debug("BrokerMW::register: build the info")
+            # reg_info = discovery_pb2.RegistrantInfo()
+            # reg_info.id = name
+            # reg_info.addr = self.addr
+            # reg_info.port = self.port
+            # self.logger.debug("BrokerMW::register: build the request")
+            # register_req = discovery_pb2.RegisterReq()
+            # register_req.role = discovery_pb2.ROLE_BOTH
             
-            register_req.info.CopyFrom(reg_info)
-            register_req.topiclist[:] = topiclist
-            disc_req = discovery_pb2.DiscoveryReq()
-            disc_req.msg_type = discovery_pb2.TYPE_REGISTER
+            # register_req.info.CopyFrom(reg_info)
+            # register_req.topiclist[:] = topiclist
+            # disc_req = discovery_pb2.DiscoveryReq()
+            # disc_req.msg_type = discovery_pb2.TYPE_REGISTER
             
-            disc_req.register_req.CopyFrom(register_req)
-            self.logger.debug("BrokerMW::register: done building the request")
+            # disc_req.register_req.CopyFrom(register_req)
+            # self.logger.debug("BrokerMW::register: done building the request")
 
-            self.logger.debug("BrokerMW::register: send the request")
-            buf2send = disc_req.SerializeToString()
-            self.logger.debug("Stringified serialized buffer: %s", buf2send)
+            # self.logger.debug("BrokerMW::register: send the request")
+            # buf2send = disc_req.SerializeToString()
+            # self.logger.debug("Stringified serialized buffer: %s", buf2send)
             
-            self.req.send(buf2send)
+            # self.req.send(buf2send)
             
             self.logger.info("BrokerMW::register: done")
         except Exception as e:

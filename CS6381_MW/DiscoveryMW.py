@@ -55,6 +55,7 @@ class DiscoveryMW():
         self.zk = None  # handle to the zookeeper client
         self.pub = None  # handle publishing from leader to replicas
         self.sub = None  # handle receiving info from leader
+        self.name = None
 
     ########################################
     # configure/initialize
@@ -67,7 +68,7 @@ class DiscoveryMW():
             # retrieve our advertised ip addr and publication port num
             self.port = args.port
             self.addr = args.addr
-
+            self.name = args.name
             # obtain the ZMQ context
             self.logger.debug("DiscoveryMW::configure: obtain ZMQ context")
             context = zmq.Context()
@@ -104,42 +105,45 @@ class DiscoveryMW():
             self.logger.debug(
                 "DiscoveryMW::configure: ZK client state = {}".format(self.zk.state))
             # if /leader znode gets deleted, we try to create new leader
-
-            @self.zk.DataWatch("/leader")
-            def watch_leader(data, stat):
-                if data is None:
-                    self.logger.info(
-                        "DiscoveryMW::watch_leader: leader deleted, trying to create new leader")
-                    self.create_leader(args.name)
-
-            @self.zk.DataWatch("/broker")
-            def watch_broker(data, stat):
-                if data is not None:
-                    self.logger.info(
-                        "DiscoveryMW::watch_broker: broker changed, updating broker info")
-                    broker_info = json.loads(data.decode("utf-8"))
-                    self.upcall_obj.update_broker_info(broker_info)
-            # creating /publisher znode if it doesn't exist
-            try:
-                self.zk.create("/publisher", makepath=True)
-            except NodeExistsError:
-                pass
-            @self.zk.ChildrenWatch("/publisher")
-            def watch_pubs(children):
-                self.logger.info(
-                    "DiscoveryMW::watch_pubs: publisher changed, updating publisher info")
-                publishers = []
-                for child in children:
-                    path = "/publisher/" + child
-                    data, _ = self.zk.get(path)
-                    publishers.append(json.loads(data.decode("utf-8")))
-                self.logger.info("DiscoveryMW::watch_pubs: {}".format(publishers))
-                self.upcall_obj.update_publisher_info(publishers)
-                return
+            
             self.logger.info("DiscoveryMW::configure completed")
 
         except Exception as e:
             raise e
+    def setWatch(self):
+        @self.zk.DataWatch("/leader")
+        def watch_leader(data, stat):
+            if data is None:
+                self.logger.info(
+                    "DiscoveryMW::watch_leader: leader deleted, trying to create new leader")
+                self.create_leader(self.name)
+
+        @self.zk.DataWatch("/broker")
+        def watch_broker(data, stat):
+            if data is not None:
+                self.logger.info(
+                    "DiscoveryMW::watch_broker: broker changed, updating broker info")
+                data = json.loads(self.zk.get("/broker")[0].decode("utf-8"))
+                broker_info = data
+                self.logger.info("DiscoveryMW::watch_broker: {}".format(broker_info))
+                self.upcall_obj.update_broker_info(broker_info)
+        # creating /publisher znode if it doesn't exist
+        try:
+            self.zk.create("/publisher", makepath=True)
+        except NodeExistsError:
+            pass
+        @self.zk.ChildrenWatch("/publisher")
+        def watch_pubs(children):
+            self.logger.info(
+                "DiscoveryMW::watch_pubs: publisher changed, updating publisher info")
+            publishers = []
+            for child in children:
+                path = "/publisher/" + child
+                data, _ = self.zk.get(path)
+                publishers.append(json.loads(data.decode("utf-8")))
+            self.logger.info("DiscoveryMW::watch_pubs: {}".format(publishers))
+            self.upcall_obj.update_publisher_info(publishers)
+            return
     ###############################################
     # create leader else wait until leader is done
     ###############################################
@@ -160,7 +164,9 @@ class DiscoveryMW():
             self.create_leader(name)
         except Exception as e:
             raise e
-        
+    def wait_broker(self):
+        while not self.zk.exists("/broker"):
+            time.sleep(1)
     def create_leader(self, name):
         try:
             try:
@@ -244,10 +250,10 @@ class DiscoveryMW():
                 timeout = self.upcall_obj.isready_request()
             elif (disc_req.msg_type == discovery_pb2.TYPE_LOOKUP_PUB_BY_TOPIC):
                 timeout = self.upcall_obj.lookup_pub_by_topic_request(
-                    disc_req.lookup_req.topiclist, True)
-            elif (disc_req.msg_type == discovery_pb2.TYPE_LOOKUP_ALL_PUBS):
-                timeout = self.upcall_obj.lookup_all_pubs_request(
                     disc_req.lookup_req.topiclist, False)
+            elif (disc_req.msg_type == discovery_pb2.TYPE_LOOKUP_ALL_PUBS):
+                timeout = self.upcall_obj.lookup_pub_by_topic_request(
+                    disc_req.lookup_req.topiclist, True)
             else:
                 raise ValueError(
                     "DiscoveryMW::event_loop: unknown message type")
@@ -319,13 +325,14 @@ class DiscoveryMW():
             lookup_resp = discovery_pb2.LookupPubByTopicResp()
             pub_info = []
             for pub in publist:
+                self.logger.debug("pub = {}".format(pub))
                 info = discovery_pb2.RegistrantInfo()
-                info.id = pub.id
-                info.addr = pub.addr
-                info.port = pub.port
+                info.id = pub["id"]
+                info.addr = pub["addr"]
+                info.port = pub["port"]
                 pub_info.append(info)
 
-            lookup_resp.publist.extend(publist)
+            lookup_resp.publist.extend(pub_info)
             disc_rep.lookup_resp.CopyFrom(lookup_resp)
 
             self.logger.debug("DiscoveryMW::lookup_reply: done building reply")

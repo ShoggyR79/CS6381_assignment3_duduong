@@ -95,6 +95,8 @@ class SubscriberAppln():
             # Now setup our underlying middleware object
             self.logger.debug("SubscriberAppln::configure - setup the middleware object")
             self.mw_obj = SubscriberMW(self.logger)
+            self.logger.debug("SubscriberAppln::driver - upcall handle")
+            self.mw_obj.set_upcall_handle(self)
             self.mw_obj.configure(args)
             self.logger.info("SubscriberAppln::configure - completed")
             
@@ -107,11 +109,10 @@ class SubscriberAppln():
             self.logger.info("SubscriberAppln::driver")
             self.dump()
             
-            self.logger.debug("SubscriberAppln::driver - upcall handle")
-            self.mw_obj.set_upcall_handle(self)
+            
             
             self.state = self.State.REGISTER
-
+            self.mw_obj.setWatch()
             self.mw_obj.event_loop(timeout = 0)
             self.logger.info("SubscriberAppln::driver - completed")
         except Exception as e:
@@ -144,7 +145,9 @@ class SubscriberAppln():
             raise e
     def re_lookup(self):
         self.logger.info("SubscriberAppln::re_lookup - send LOOKUP msg to discovery service")
+        # sleep for 2 seconds
         self.mw_obj.lookup(self.topiclist)
+
     def register_response(self, reg_resp):
         '''Handle the register response'''
         try:

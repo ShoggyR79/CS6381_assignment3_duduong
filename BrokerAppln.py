@@ -80,6 +80,8 @@ class BrokerAppln():
             # setup the middleware object
             self.logger.debug("BrokerAppln::configure - creating middleware object")
             self.mw_obj = BrokerMW(self.logger)
+            self.logger.debug("BrokerAppln::driver - upcall handler")
+            self.mw_obj.set_upcall_handle(self)
             self.mw_obj.configure(args) # pass remainder of args to the m/w object
             
             self.logger.info("BrokerAppln::configure - completed")
@@ -91,16 +93,16 @@ class BrokerAppln():
             self.logger.info("BrokerAppln::driver")
             self.dump()
             
-            self.logger.debug("BrokerAppln::driver - upcall handler")
-            self.mw_obj.set_upcall_handle(self)
             
+            self.mw_obj.setWatch()
             self.state = self.State.REGISTER
             
             self.mw_obj.event_loop(timeout = 0)
             self.logger.info("BrokerAppln::driver - completed")
         except Exception as e:
             raise e
-        
+    def re_lookup(self):
+        self.mw_obj.lookup(self.topiclist)
     def invoke_operation(self):
         try:
             self.logger.info("BrokerAppln::invoke_operation")
@@ -109,13 +111,13 @@ class BrokerAppln():
                 # send a register msg to discovery service
                 self.logger.debug ("PublisherAppln::invoke_operation - register with the discovery service")
                 self.mw_obj.register (self.name, self.topiclist)
-
+                self.state = self.State.LOOKUP
                 # Remember that we were invoked by the event loop as part of the upcall.
                 # So we are going to return back to it for its next iteration. Because
                 # we have just now sent a register request, the very next thing we expect is
                 # to receive a response from remote entity. So we need to set the timeout
                 # for the next iteration of the event loop to a large num and so return a None.
-                return None
+                return 0
             elif (self.state == self.State.ISREADY):
                 # Now keep checking with the discovery service if we are ready to go
                 #
@@ -215,6 +217,8 @@ def parseCmdLineArgs ():
 
   parser.add_argument ("-l", "--loglevel", type=int, default=logging.INFO, choices=[logging.DEBUG,logging.INFO,logging.WARNING,logging.ERROR,logging.CRITICAL], help="logging level, choices 10,20,30,40,50: default 20=logging.INFO")
   
+  parser.add_argument ("-z", "--zookeeper", default="localhost:2181", help="IP Addr:Port combo for the zookeeper service, default is localhost:2181")
+
   return parser.parse_args()
 
 

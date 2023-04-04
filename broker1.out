@@ -1,0 +1,218 @@
+2023-04-04 16:05:23,796 - root - INFO - Main - acqurie a child logger and then log messages in child
+2023-04-04 16:05:23,796 - root - INFO - Main - acquire a child logger and then log messages in the child
+2023-04-04 16:05:23,800 - PublisherAppln - INFO - BrokerAppln::configure
+2023-04-04 16:05:23,800 - PublisherAppln - INFO - BrokerMW::configure
+2023-04-04 16:05:23,803 - kazoo.client - INFO - Connecting to 10.0.0.1(10.0.0.1):2181, use_ssl: False
+2023-04-04 16:05:23,806 - kazoo.client - WARNING - Connection dropped: socket connection error: Connection refused
+2023-04-04 16:05:23,882 - kazoo.client - INFO - Connecting to 10.0.0.1(10.0.0.1):2181, use_ssl: False
+2023-04-04 16:05:23,884 - kazoo.client - WARNING - Connection dropped: socket connection error: Connection refused
+2023-04-04 16:05:24,076 - kazoo.client - INFO - Connecting to 10.0.0.1(10.0.0.1):2181, use_ssl: False
+2023-04-04 16:05:24,077 - kazoo.client - WARNING - Connection dropped: socket connection error: Connection refused
+2023-04-04 16:05:24,464 - kazoo.client - INFO - Connecting to 10.0.0.1(10.0.0.1):2181, use_ssl: False
+2023-04-04 16:05:24,466 - kazoo.client - WARNING - Connection dropped: socket connection error: Connection refused
+2023-04-04 16:05:25,562 - kazoo.client - INFO - Connecting to 10.0.0.1(10.0.0.1):2181, use_ssl: False
+2023-04-04 16:05:25,567 - kazoo.client - INFO - Zookeeper connection established, state: CONNECTED
+2023-04-04 16:05:25,568 - PublisherAppln - INFO - BrokerMW::broker_leader
+2023-04-04 16:05:25,568 - PublisherAppln - INFO - BrokerMW::broker_leader: connected to zookeeper
+2023-04-04 16:05:25,568 - PublisherAppln - INFO - BrokerMW::broker_leader: broker node does not exist, creating self
+2023-04-04 16:05:25,574 - PublisherAppln - INFO - BrokerMW::configure completed
+2023-04-04 16:05:25,574 - PublisherAppln - INFO - BrokerAppln::configure - completed
+2023-04-04 16:05:25,574 - PublisherAppln - INFO - BrokerAppln::driver
+2023-04-04 16:05:25,574 - PublisherAppln - INFO - **********************************
+2023-04-04 16:05:25,574 - PublisherAppln - INFO - BrokerAppln::dump
+2023-04-04 16:05:25,574 - PublisherAppln - INFO - ------------------------------
+2023-04-04 16:05:25,574 - PublisherAppln - INFO -      Name: broker1
+2023-04-04 16:05:25,574 - PublisherAppln - INFO -      Lookup: Centralized
+2023-04-04 16:05:25,574 - PublisherAppln - INFO -      Dissemination: Broker
+2023-04-04 16:05:25,575 - PublisherAppln - INFO -      TopicList: ['weather', 'humidity', 'airquality', 'light', 'pressure', 'temperature', 'sound', 'altitude', 'location']
+2023-04-04 16:05:25,575 - PublisherAppln - INFO - **********************************
+2023-04-04 16:05:25,578 - PublisherAppln - INFO - BrokerMW::watch_leader: leader node changed
+2023-04-04 16:05:25,580 - PublisherAppln - INFO - SubscriberMW::set_req: disconnecting from tcp://10.0.0.3:5555
+2023-04-04 16:05:25,582 - PublisherAppln - INFO - SubscriberMW::watch_pubs: publishers changed, sending lookup request
+2023-04-04 16:05:25,582 - PublisherAppln - INFO - BrokerAppln::invoke_operation
+2023-04-04 16:05:25,582 - PublisherAppln - INFO - BrokerAppln::invoke_operation - state: State.CONFIGURE
+2023-04-04 16:05:25,582 - PublisherAppln - INFO - BrokerMW::event_loop
+2023-04-04 16:05:25,582 - PublisherAppln - INFO - BrokerAppln::invoke_operation
+2023-04-04 16:05:25,582 - PublisherAppln - INFO - BrokerAppln::invoke_operation - state: State.REGISTER
+2023-04-04 16:05:25,582 - PublisherAppln - INFO - BrokerMW::register
+2023-04-04 16:05:25,582 - PublisherAppln - INFO - BrokerMW::register: done
+2023-04-04 16:05:25,582 - PublisherAppln - INFO - BrokerAppln::invoke_operation
+2023-04-04 16:05:25,582 - PublisherAppln - INFO - BrokerAppln::invoke_operation - state: State.LOOKUP
+2023-04-04 16:05:25,582 - PublisherAppln - INFO - BrokerMW::lookup
+2023-04-04 16:05:25,582 - PublisherAppln - INFO - BrokerMW::lookup - done building lookup request to discovery service
+2023-04-04 16:05:25,583 - PublisherAppln - INFO - BrokerMW::lookup - sent lookup message and now wait for reply
+2023-04-04 16:05:25,837 - PublisherAppln - INFO - SubscriberMW::watch_pubs: publishers changed, sending lookup request
+2023-04-04 16:05:25,837 - PublisherAppln - INFO - BrokerAppln::invoke_operation
+2023-04-04 16:05:25,837 - PublisherAppln - INFO - BrokerAppln::invoke_operation - state: State.LOOKUP
+2023-04-04 16:05:25,837 - PublisherAppln - INFO - BrokerMW::lookup
+2023-04-04 16:05:25,837 - PublisherAppln - INFO - BrokerMW::lookup - done building lookup request to discovery service
+2023-04-04 16:05:25,837 - kazoo.recipe.watchers - ERROR - Operation cannot be accomplished in current state
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/kazoo/recipe/watchers.py", line 340, in _get_children
+    result = self._func(children)
+  File "/home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/CS6381_MW/BrokerMW.py", line 140, in watch_pubs
+    self.upcall_obj.invoke_operation()
+  File "/home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/BrokerAppln.py", line 141, in invoke_operation
+    raise e
+  File "/home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/BrokerAppln.py", line 138, in invoke_operation
+    self.mw_obj.lookup(self.topiclist)
+  File "/home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/CS6381_MW/BrokerMW.py", line 292, in lookup
+    raise e
+  File "/home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/CS6381_MW/BrokerMW.py", line 287, in lookup
+    self.req.send(buf2send) # send the request to discovery service
+  File "/usr/local/lib/python3.10/dist-packages/zmq/sugar/socket.py", line 688, in send
+    return super().send(data, flags=flags, copy=copy, track=track)
+  File "zmq/backend/cython/socket.pyx", line 742, in zmq.backend.cython.socket.Socket.send
+  File "zmq/backend/cython/socket.pyx", line 789, in zmq.backend.cython.socket.Socket.send
+  File "zmq/backend/cython/socket.pyx", line 255, in zmq.backend.cython.socket._send_copy
+  File "zmq/backend/cython/socket.pyx", line 250, in zmq.backend.cython.socket._send_copy
+  File "zmq/backend/cython/checkrc.pxd", line 28, in zmq.backend.cython.checkrc._check_rc
+zmq.error.ZMQError: Operation cannot be accomplished in current state
+2023-04-04 16:05:25,838 - kazoo.handlers.threading - ERROR - Exception in worker queue thread
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/kazoo/handlers/threading.py", line 123, in _thread_worker
+    func()
+  File "/usr/local/lib/python3.10/dist-packages/kazoo/handlers/threading.py", line 212, in <lambda>
+    self.callback_queue.put(lambda: callback.func(*callback.args))
+  File "/usr/local/lib/python3.10/dist-packages/kazoo/recipe/watchers.py", line 352, in _watcher
+    self._get_children(event)
+  File "/usr/local/lib/python3.10/dist-packages/kazoo/recipe/watchers.py", line 37, in wrapper
+    return func(*args, **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/kazoo/recipe/watchers.py", line 340, in _get_children
+    result = self._func(children)
+  File "/home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/CS6381_MW/BrokerMW.py", line 140, in watch_pubs
+    self.upcall_obj.invoke_operation()
+  File "/home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/BrokerAppln.py", line 141, in invoke_operation
+    raise e
+  File "/home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/BrokerAppln.py", line 138, in invoke_operation
+    self.mw_obj.lookup(self.topiclist)
+  File "/home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/CS6381_MW/BrokerMW.py", line 292, in lookup
+    raise e
+  File "/home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/CS6381_MW/BrokerMW.py", line 287, in lookup
+    self.req.send(buf2send) # send the request to discovery service
+  File "/usr/local/lib/python3.10/dist-packages/zmq/sugar/socket.py", line 688, in send
+    return super().send(data, flags=flags, copy=copy, track=track)
+  File "zmq/backend/cython/socket.pyx", line 742, in zmq.backend.cython.socket.Socket.send
+  File "zmq/backend/cython/socket.pyx", line 789, in zmq.backend.cython.socket.Socket.send
+  File "zmq/backend/cython/socket.pyx", line 255, in zmq.backend.cython.socket._send_copy
+  File "zmq/backend/cython/socket.pyx", line 250, in zmq.backend.cython.socket._send_copy
+  File "zmq/backend/cython/checkrc.pxd", line 28, in zmq.backend.cython.checkrc._check_rc
+zmq.error.ZMQError: Operation cannot be accomplished in current state
+2023-04-04 16:05:25,840 - PublisherAppln - INFO - SubscriberMW::watch_pubs: publishers changed, sending lookup request
+2023-04-04 16:05:25,840 - PublisherAppln - INFO - BrokerAppln::invoke_operation
+2023-04-04 16:05:25,841 - PublisherAppln - INFO - BrokerAppln::invoke_operation - state: State.LOOKUP
+2023-04-04 16:05:25,841 - PublisherAppln - INFO - BrokerMW::lookup
+2023-04-04 16:05:25,841 - PublisherAppln - INFO - BrokerMW::lookup - done building lookup request to discovery service
+2023-04-04 16:05:25,841 - kazoo.recipe.watchers - ERROR - Operation cannot be accomplished in current state
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/kazoo/recipe/watchers.py", line 340, in _get_children
+    result = self._func(children)
+  File "/home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/CS6381_MW/BrokerMW.py", line 140, in watch_pubs
+    self.upcall_obj.invoke_operation()
+  File "/home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/BrokerAppln.py", line 141, in invoke_operation
+    raise e
+  File "/home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/BrokerAppln.py", line 138, in invoke_operation
+    self.mw_obj.lookup(self.topiclist)
+  File "/home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/CS6381_MW/BrokerMW.py", line 292, in lookup
+    raise e
+  File "/home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/CS6381_MW/BrokerMW.py", line 287, in lookup
+    self.req.send(buf2send) # send the request to discovery service
+  File "/usr/local/lib/python3.10/dist-packages/zmq/sugar/socket.py", line 688, in send
+    return super().send(data, flags=flags, copy=copy, track=track)
+  File "zmq/backend/cython/socket.pyx", line 742, in zmq.backend.cython.socket.Socket.send
+  File "zmq/backend/cython/socket.pyx", line 789, in zmq.backend.cython.socket.Socket.send
+  File "zmq/backend/cython/socket.pyx", line 255, in zmq.backend.cython.socket._send_copy
+  File "zmq/backend/cython/socket.pyx", line 250, in zmq.backend.cython.socket._send_copy
+  File "zmq/backend/cython/checkrc.pxd", line 28, in zmq.backend.cython.checkrc._check_rc
+zmq.error.ZMQError: Operation cannot be accomplished in current state
+2023-04-04 16:05:25,841 - kazoo.handlers.threading - ERROR - Exception in worker queue thread
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/kazoo/handlers/threading.py", line 123, in _thread_worker
+    func()
+  File "/usr/local/lib/python3.10/dist-packages/kazoo/handlers/threading.py", line 212, in <lambda>
+    self.callback_queue.put(lambda: callback.func(*callback.args))
+  File "/usr/local/lib/python3.10/dist-packages/kazoo/recipe/watchers.py", line 352, in _watcher
+    self._get_children(event)
+  File "/usr/local/lib/python3.10/dist-packages/kazoo/recipe/watchers.py", line 37, in wrapper
+    return func(*args, **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/kazoo/recipe/watchers.py", line 340, in _get_children
+    result = self._func(children)
+  File "/home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/CS6381_MW/BrokerMW.py", line 140, in watch_pubs
+    self.upcall_obj.invoke_operation()
+  File "/home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/BrokerAppln.py", line 141, in invoke_operation
+    raise e
+  File "/home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/BrokerAppln.py", line 138, in invoke_operation
+    self.mw_obj.lookup(self.topiclist)
+  File "/home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/CS6381_MW/BrokerMW.py", line 292, in lookup
+    raise e
+  File "/home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/CS6381_MW/BrokerMW.py", line 287, in lookup
+    self.req.send(buf2send) # send the request to discovery service
+  File "/usr/local/lib/python3.10/dist-packages/zmq/sugar/socket.py", line 688, in send
+    return super().send(data, flags=flags, copy=copy, track=track)
+  File "zmq/backend/cython/socket.pyx", line 742, in zmq.backend.cython.socket.Socket.send
+  File "zmq/backend/cython/socket.pyx", line 789, in zmq.backend.cython.socket.Socket.send
+  File "zmq/backend/cython/socket.pyx", line 255, in zmq.backend.cython.socket._send_copy
+  File "zmq/backend/cython/socket.pyx", line 250, in zmq.backend.cython.socket._send_copy
+  File "zmq/backend/cython/checkrc.pxd", line 28, in zmq.backend.cython.checkrc._check_rc
+zmq.error.ZMQError: Operation cannot be accomplished in current state
+2023-04-04 16:05:25,980 - PublisherAppln - INFO - SubscriberMW::watch_pubs: publishers changed, sending lookup request
+2023-04-04 16:05:25,980 - PublisherAppln - INFO - BrokerAppln::invoke_operation
+2023-04-04 16:05:25,980 - PublisherAppln - INFO - BrokerAppln::invoke_operation - state: State.LOOKUP
+2023-04-04 16:05:25,980 - PublisherAppln - INFO - BrokerMW::lookup
+2023-04-04 16:05:25,980 - PublisherAppln - INFO - BrokerMW::lookup - done building lookup request to discovery service
+2023-04-04 16:05:25,980 - kazoo.recipe.watchers - ERROR - Operation cannot be accomplished in current state
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/kazoo/recipe/watchers.py", line 340, in _get_children
+    result = self._func(children)
+  File "/home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/CS6381_MW/BrokerMW.py", line 140, in watch_pubs
+    self.upcall_obj.invoke_operation()
+  File "/home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/BrokerAppln.py", line 141, in invoke_operation
+    raise e
+  File "/home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/BrokerAppln.py", line 138, in invoke_operation
+    self.mw_obj.lookup(self.topiclist)
+  File "/home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/CS6381_MW/BrokerMW.py", line 292, in lookup
+    raise e
+  File "/home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/CS6381_MW/BrokerMW.py", line 287, in lookup
+    self.req.send(buf2send) # send the request to discovery service
+  File "/usr/local/lib/python3.10/dist-packages/zmq/sugar/socket.py", line 688, in send
+    return super().send(data, flags=flags, copy=copy, track=track)
+  File "zmq/backend/cython/socket.pyx", line 742, in zmq.backend.cython.socket.Socket.send
+  File "zmq/backend/cython/socket.pyx", line 789, in zmq.backend.cython.socket.Socket.send
+  File "zmq/backend/cython/socket.pyx", line 255, in zmq.backend.cython.socket._send_copy
+  File "zmq/backend/cython/socket.pyx", line 250, in zmq.backend.cython.socket._send_copy
+  File "zmq/backend/cython/checkrc.pxd", line 28, in zmq.backend.cython.checkrc._check_rc
+zmq.error.ZMQError: Operation cannot be accomplished in current state
+2023-04-04 16:05:25,980 - kazoo.handlers.threading - ERROR - Exception in worker queue thread
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/kazoo/handlers/threading.py", line 123, in _thread_worker
+    func()
+  File "/usr/local/lib/python3.10/dist-packages/kazoo/handlers/threading.py", line 212, in <lambda>
+    self.callback_queue.put(lambda: callback.func(*callback.args))
+  File "/usr/local/lib/python3.10/dist-packages/kazoo/recipe/watchers.py", line 352, in _watcher
+    self._get_children(event)
+  File "/usr/local/lib/python3.10/dist-packages/kazoo/recipe/watchers.py", line 37, in wrapper
+    return func(*args, **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/kazoo/recipe/watchers.py", line 340, in _get_children
+    result = self._func(children)
+  File "/home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/CS6381_MW/BrokerMW.py", line 140, in watch_pubs
+    self.upcall_obj.invoke_operation()
+  File "/home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/BrokerAppln.py", line 141, in invoke_operation
+    raise e
+  File "/home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/BrokerAppln.py", line 138, in invoke_operation
+    self.mw_obj.lookup(self.topiclist)
+  File "/home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/CS6381_MW/BrokerMW.py", line 292, in lookup
+    raise e
+  File "/home/khaidu3/Documents/CS6381/CS6381_assignment3_duduong/CS6381_MW/BrokerMW.py", line 287, in lookup
+    self.req.send(buf2send) # send the request to discovery service
+  File "/usr/local/lib/python3.10/dist-packages/zmq/sugar/socket.py", line 688, in send
+    return super().send(data, flags=flags, copy=copy, track=track)
+  File "zmq/backend/cython/socket.pyx", line 742, in zmq.backend.cython.socket.Socket.send
+  File "zmq/backend/cython/socket.pyx", line 789, in zmq.backend.cython.socket.Socket.send
+  File "zmq/backend/cython/socket.pyx", line 255, in zmq.backend.cython.socket._send_copy
+  File "zmq/backend/cython/socket.pyx", line 250, in zmq.backend.cython.socket._send_copy
+  File "zmq/backend/cython/checkrc.pxd", line 28, in zmq.backend.cython.checkrc._check_rc
+zmq.error.ZMQError: Operation cannot be accomplished in current state
+2023-04-04 16:05:35,346 - PublisherAppln - INFO - BrokerMW::watch_leader: leader node changed
+2023-04-04 16:05:36,351 - PublisherAppln - INFO - SubscriberMW::set_req: disconnecting from tcp://10.0.0.3:5555
+2023-04-04 16:05:36,353 - PublisherAppln - INFO - BrokerMW::watch_leader: leader node changed
+2023-04-04 16:05:36,354 - PublisherAppln - INFO - SubscriberMW::set_req: disconnecting from tcp://10.0.0.4:5555
