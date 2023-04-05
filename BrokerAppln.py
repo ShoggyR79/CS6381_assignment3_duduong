@@ -13,9 +13,9 @@
 # This is left as an exercise for the student.  The Broker is involved only when
 # the dissemination strategy is via the broker.
 #
-# A broker is an intermediary; thus it plays both the publisher and subscriber roles
+# A broker is an intermediary; thus it plays both the broker and subscriber roles
 # but in the form of a proxy. For instance, it serves as the single subscriber to
-# all publishers. On the other hand, it serves as the single publisher to all the subscribers.
+# all brokers. On the other hand, it serves as the single broker to all the subscribers.
 # import the needed packages
 import os     # for OS functions
 import sys    # for syspath and system exception
@@ -82,7 +82,7 @@ class BrokerAppln():
             self.mw_obj = BrokerMW(self.logger)
             self.logger.debug("BrokerAppln::driver - upcall handler")
             self.mw_obj.set_upcall_handle(self)
-            self.mw_obj.configure(args) # pass remainder of args to the m/w object
+            self.mw_obj.configure(args, self.topiclist) # pass remainder of args to the m/w object
             
             self.logger.info("BrokerAppln::configure - completed")
         except Exception as e:
@@ -107,39 +107,17 @@ class BrokerAppln():
             self.logger.info("BrokerAppln::invoke_operation")
             self.logger.info("BrokerAppln::invoke_operation - state: {}".format(self.state))
             if self.state == self.State.REGISTER:
-                # send a register msg to discovery service
-                self.logger.debug ("PublisherAppln::invoke_operation - register with the discovery service")
-                self.mw_obj.register (self.name, self.topiclist)
-                self.state = self.State.LOOKUP
-                # Remember that we were invoked by the event loop as part of the upcall.
-                # So we are going to return back to it for its next iteration. Because
-                # we have just now sent a register request, the very next thing we expect is
-                # to receive a response from remote entity. So we need to set the timeout
-                # for the next iteration of the event loop to a large num and so return a None.
-                return 0
+                return None
             elif (self.state == self.State.ISREADY):
-                # Now keep checking with the discovery service if we are ready to go
-                #
-                # Note that in the previous version of the code, we had a loop. But now instead
-                # of an explicit loop we are going to go back and forth between the event loop
-                # and the upcall until we receive the go ahead from the discovery service.
-                
-                self.logger.debug ("PublisherAppln::invoke_operation - check if are ready to go")
-                self.mw_obj.is_ready ()  # send the is_ready? request
-
-                # Remember that we were invoked by the event loop as part of the upcall.
-                # So we are going to return back to it for its next iteration. Because
-                # we have just now sent a isready request, the very next thing we expect is
-                # to receive a response from remote entity. So we need to set the timeout
-                # for the next iteration of the event loop to a large num and so return a None.
+                return None
             elif self.state == self.State.LOOKUP:
-                self.logger.debug("BrokerAppln::invoke_operation - lookup")
-                self.mw_obj.lookup(self.topiclist)
                 return None
         except Exception as e:
             raise e
         
-    
+    def handle_subscription(self, publist):
+        self.logger.info("BrokerAppln::handle_subscription")
+        self.mw_obj.subscribe(publist)
     def dump(self):
         try:
             self.logger.info ("**********************************")
@@ -160,7 +138,7 @@ class BrokerAppln():
 ###################################
 def parseCmdLineArgs ():
   # instantiate a ArgumentParser object
-  parser = argparse.ArgumentParser (description="Publisher Application")
+  parser = argparse.ArgumentParser (description="broker Application")
   
   # Now specify all the optional arguments we support
   # At a minimum, you will need a way to specify the IP and port of the lookup
@@ -170,15 +148,15 @@ def parseCmdLineArgs ():
   
   parser.add_argument ("-n", "--name", default="broker", help="Some name assigned to broker")
 
-  parser.add_argument ("-a", "--addr", default="localhost", help="IP addr of this publisher to advertise (default: localhost)")
+  parser.add_argument ("-a", "--addr", default="localhost", help="IP addr of this broker to advertise (default: localhost)")
 
-  parser.add_argument ("-p", "--port", type=int, default=7777, help="Port number on which our underlying publisher ZMQ service runs, default=7777")
+  parser.add_argument ("-p", "--port", type=int, default=7777, help="Port number on which our underlying broker ZMQ service runs, default=7777")
     
   parser.add_argument ("-d", "--discovery", default="localhost:5555", help="IP Addr:Port combo for the discovery service, default localhost:5555")
 
   parser.add_argument ("-c", "--config", default="config.ini", help="configuration file (default: config.ini)")
 
-  parser.add_argument ("-l", "--loglevel", type=int, default=logging.INFO, choices=[logging.DEBUG,logging.INFO,logging.WARNING,logging.ERROR,logging.CRITICAL], help="logging level, choices 10,20,30,40,50: default 20=logging.INFO")
+  parser.add_argument ("-l", "--loglevel", type=int, default=logging.DEBUG, choices=[logging.DEBUG,logging.INFO,logging.WARNING,logging.ERROR,logging.CRITICAL], help="logging level, choices 10,20,30,40,50: default 20=logging.INFO")
   
   parser.add_argument ("-z", "--zookeeper", default="localhost:2181", help="IP Addr:Port combo for the zookeeper service, default is localhost:2181")
 
@@ -190,7 +168,7 @@ def main():
         logging.info("Main - acqurie a child logger and then log messages in child")
     # obtain a system wide logger and initialize it to debug level to begin with
         logging.info ("Main - acquire a child logger and then log messages in the child")
-        logger = logging.getLogger ("PublisherAppln")
+        logger = logging.getLogger ("BrokerAppln")
         
         # first parse the arguments
         logger.debug ("Main: parse command line arguments")
@@ -201,16 +179,16 @@ def main():
         logger.setLevel (args.loglevel)
         logger.debug ("Main: effective log level is {}".format (logger.getEffectiveLevel ()))
 
-        # Obtain a publisher application
-        logger.debug ("Main: obtain the publisher appln object")
+        # Obtain a broker application
+        logger.debug ("Main: obtain the broker appln object")
         broker_app = BrokerAppln (logger)
 
         # configure the object
-        logger.debug ("Main: configure the publisher appln object")
+        logger.debug ("Main: configure the broker appln object")
         broker_app.configure (args)
 
         # now invoke the driver program
-        logger.debug ("Main: invoke the publisher appln driver")
+        logger.debug ("Main: invoke the broker appln driver")
         broker_app.driver ()
 
     except Exception as e:

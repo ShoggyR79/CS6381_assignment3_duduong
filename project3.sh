@@ -10,3 +10,5 @@ h8 python3 SubscriberAppln.py -d "10.0.0.1:5555" -T 5 -n sub1 -f "output.csv" -z
 h9 python3 SubscriberAppln.py -d "10.0.0.1:5555" -T 5 -n sub2 -f "output.csv" -z 10.0.0.1> sub2.out 2>&1 &
 h10 python3 SubscriberAppln.py -d "10.0.0.1:5555" -T 5 -n sub3 -f "output.csv" -z 10.0.0.1> sub3.out 2>&1 &
 h11 python3 BrokerAppln.py -a "10.0.0.11" -n broker1 -z 10.0.0.1 > broker1.out 2>&1 &
+h12 python3 BrokerAppln.py -a "10.0.0.12" -n broker2 -z 10.0.0.1 > broker2.out 2>&1 &
+h13 python3 BrokerAppln.py -a "10.0.0.13" -n broker3 -z 10.0.0.1 > broker3.out 2>&1 &

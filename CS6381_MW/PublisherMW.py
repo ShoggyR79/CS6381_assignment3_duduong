@@ -334,7 +334,7 @@ class PublisherMW ():
       
       #EDIT: building the protobuf message 
       send_msg = discovery_pb2.Publication()
-      send_msg.timestamp = timeit.default_timer()
+      send_msg.timestamp = time.monotonic()
       send_msg.topic = topic
       send_msg.data = data
       self.logger.debug ("PublisherMW::disseminate - {}".format (send_str))

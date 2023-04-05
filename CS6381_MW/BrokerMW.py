@@ -59,7 +59,7 @@ class BrokerMW():
     # configure/initialize
     ########################################
     
-    def configure (self, args):
+    def configure (self, args, topiclist):
         '''Initialize the object'''
         try:
             self.logger.info("BrokerMW::configure")
@@ -81,11 +81,14 @@ class BrokerMW():
             self.pub = context.socket(zmq.PUB)
             self.sub = context.socket(zmq.SUB)
             
+
             # register our sockets iwth th poller
             self.logger.debug("BrokerMW::configure: register the REQ and SUB sockets with the poller")
             self.poller.register(self.req, zmq.POLLIN)
             self.poller.register(self.sub, zmq.POLLIN)
             
+            for topic in topiclist:
+                self.sub.setsockopt_string(zmq.SUBSCRIBE, topic)
             
             
             
@@ -135,16 +138,15 @@ class BrokerMW():
             self.set_req()
         @self.zk.ChildrenWatch("/publisher")
         def watch_pubs(children):
-            self.logger.info("SubscriberMW::watch_pubs: publishers changed, re-subscribing")
+            self.logger.info("BrokerMW::watch_pubs: publishers changed, re-subscribing")
             # self.set_req()
-            if self.lookup_method == "Direct":
-                publishers = []
-                for child in children:
-                    path = "/publisher/" + child
-                    data, _ = self.zk.get(path)
-                    publishers.append(json.loads(data.decode("utf-8")))
-                self.logger.info("DiscoveryMW::watch_pubs: {}".format(publishers))
-                self.upcall_obj.update_publisher_info(publishers)
+            publishers = []
+            for child in children:
+                path = "/publisher/" + child
+                data, _ = self.zk.get(path)
+                publishers.append(json.loads(data.decode("utf-8"))['id'])
+            self.logger.info("BrokerMW::watch_pubs: {}".format(publishers))
+            self.subscribe(publishers)
 
     def broker_leader(self, name):
         try:
@@ -206,9 +208,10 @@ class BrokerMW():
     
     def subscribe(self, publist):
         try:
-            self.logger.debug("BrokerMW::subscribe")
+            self.logger.info("BrokerMW::subscribe")
             for pub in publist:
-                addr = "tcp://" + pub.addr + ":" + str(pub.port)
+                addr = "tcp://" + pub['addr'] + ":" + str(pub['port'])
+                self.logger.info("BrokerMW::subscribe: subscribing to {}".format(addr))
                 self.sub.connect(addr)
         except Exception as e:
             raise e

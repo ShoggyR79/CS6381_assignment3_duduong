@@ -71,15 +71,15 @@ class SubscriberMW():
         self.zk = None
         self.discovery = None
 
-        self.lookup_method = None
+        self.dissemination_method = None
     # configure/initialize
 
-    def configure(self, args):
+    def configure(self, args, dissemination_method, topiclist):
         try:
 
             self.logger.debug("SubscriberMW: configure")
             self.filename = args.filename
-            self.lookup_method = args.lookup_method
+            self.dissemination_method = dissemination_method
             # # First retrieve our advertised IP addr and the subscriber port num
             # self.port = args.port
             # self.addr = args.addr
@@ -98,10 +98,16 @@ class SubscriberMW():
                 "SubscriberMW: configure: obtain REQ and sub sockets")
             self.req = context.socket(zmq.REQ)
             self.sub = context.socket(zmq.SUB)
+
+            
             # get the ZMQ poller object
             self.logger.debug("SubscriberMW: configure: obtain ZMQ poller")
             self.poller.register(self.req, zmq.POLLIN)
             self.poller.register(self.sub, zmq.POLLIN)
+
+            for topic in topiclist:
+                self.logger.debug("SubscriberMW: configure: subscribe to topic {}".format(topic))
+                self.sub.setsockopt_string(zmq.SUBSCRIBE, topic)
             # Now connect ourselves to the discovery service. Recall that the IP/port were
             # supplied in our argument parsing.
             self.logger.debug(
@@ -141,24 +147,24 @@ class SubscriberMW():
 
         @self.zk.DataWatch("/broker")
         def watch_broker(data, stat):
-            self.logger.info("SubscriberMW::watch_broker: broker node changed")
-            if self.lookup_method == "Broker" and data is not None:
+            self.logger.info("SubscriberMW::watch_broker: broker node changed - {} and {}".format(self.dissemination_method, data))
+            if self.dissemination_method == "Broker" and data is not None:
                 meta = json.loads(self.zk.get("/broker")[0].decode('utf-8'))
+                self.logger.info("SubscriberMW::watch_broker: broker changed, re-subscribing to {}".format(meta["id"]))
                 self.subscribe([meta])
-
-        @self.zk.ChildrenWatch("/publisher")
-        def watch_pubs(children):
-            self.logger.info(
-                "SubscriberMW::watch_pubs: publishers changed, re-subscribing")
-            # self.set_req()
-            if self.lookup_method == "Direct":
-                publishers = []
-                for child in children:
-                    path = "/publisher/" + child
-                    data, _ = self.zk.get(path)
-                    publishers.append(json.loads(data.decode("utf-8")))
-                self.logger.info("DiscoveryMW::watch_pubs: {}".format(publishers))
-                self.upcall_obj.update_publisher_info(publishers)
+        if self.dissemination_method == "Direct":
+            @self.zk.ChildrenWatch("/publisher")
+            def watch_pubs(children):
+                # self.set_req()
+                    self.logger.info(
+                    "SubscriberMW::watch_pubs: publishers changed, re-subscribing")
+                    publishers = []
+                    for child in children:
+                        path = "/publisher/" + child
+                        data, _ = self.zk.get(path)
+                        publishers.append(json.loads(data.decode("utf-8")))
+                    self.logger.info("DiscoveryMW::watch_pubs: {}".format(publishers))
+                    self.upcall_obj.update_publishers_info(publishers)
 
     def event_loop(self, timeout=None):
         try:
@@ -225,8 +231,10 @@ class SubscriberMW():
 
             self.logger.debug("SubscriberMW::subscribe")
             self.start_time = timeit.default_timer()
+            self.logger.info("SubscriberMW::subscribe: {}".format(publist))
             for pub in publist:
-                addr = "tcp://" + pub.addr + ":" + str(pub.port)
+                addr = "tcp://10.0.0.7:5577"
+                self.logger.info("SubscriberMW::subscribe: connecting to {}".format(addr))
                 self.sub.connect(addr)
 
         except Exception as e:
@@ -240,14 +248,14 @@ class SubscriberMW():
             timestamp = message.timestamp
             topic = message.topic
             data = message.data
-            recv_time = timeit.default_timer()
+            recv_time = time.monotonic()
             latency = recv_time - message.timestamp
             data_point = ((recv_time - self.start_time), latency)
             self.write_csv(self.filename, data_point)
             self.logger.debug(
                 "SubscriberMW::recv_data, value = {}: {}- {}".format(timestamp, topic, data))
             # print("Subscriber::recv_data, value = {}: {}- {}".format(timestamp, topic, data))
-            # print("Time Received: {} \nLatency = {}".format(recv_time, latency))
+            self.logger.debug("Time Received: {} \nTime Sent: {}\nLatency = {}".format(recv_time, message.timestamp, latency))
         except Exception as e:
             raise e
 

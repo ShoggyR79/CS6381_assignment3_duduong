@@ -97,7 +97,7 @@ class SubscriberAppln():
             self.mw_obj = SubscriberMW(self.logger)
             self.logger.debug("SubscriberAppln::driver - upcall handle")
             self.mw_obj.set_upcall_handle(self)
-            self.mw_obj.configure(args, self.lookup_method)
+            self.mw_obj.configure(args, self.dissemination, self.topiclist)
             self.logger.info("SubscriberAppln::configure - completed")
             
         except Exception as e:
@@ -124,11 +124,7 @@ class SubscriberAppln():
             
             # check what state are we in. 
             if (self.state == self.State.REGISTER):
-                # send a register msg to discovery service
-                self.logger.debug("SubscriberAppln::invoke_operation - send register msg to discovery service")
-                self.mw_obj.register(self.name, self.topiclist)
-                self.state = self.State.LOOKUP
-                return 0
+                return None
             elif (self.state == self.State.LOOKUP):
                 self.logger.debug("SubscriberAppln::invoke_operation - send LOOKUP msg to discovery service")
                 # implement in milestone 2
@@ -150,8 +146,8 @@ class SubscriberAppln():
         filtered_pubs = []
         for pub in publist:
             # if there is any overlap between the topics we are interested in and the topics the publisher is publishing
-            if (set(self.topiclist).intersection(pub.topiclist)):
-                filtered_pubs.append(pub)
+            if (set(self.topiclist).intersection(pub['topiclist'])):
+                filtered_pubs.append(pub['id'])
         self.mw_obj.subscribe(filtered_pubs)
     ########################################
     # dump the contents of the object 
@@ -185,7 +181,7 @@ def parseCmdLineArgs():
 
     parser.add_argument ("-T", "--num_topics", type=int, choices=range(1,10), default=1, help="Number of topics to publish, currently restricted to max of 9")
 
-    parser.add_argument ("-l", "--loglevel", type=int, default=logging.INFO, choices=[logging.DEBUG,logging.INFO,logging.WARNING,logging.ERROR,logging.CRITICAL], help="logging level, choices 10,20,30,40,50: default 20=logging.INFO")
+    parser.add_argument ("-l", "--loglevel", type=int, default=logging.DEBUG, choices=[logging.DEBUG,logging.INFO,logging.WARNING,logging.ERROR,logging.CRITICAL], help="logging level, choices 10,20,30,40,50: default 20=logging.INFO")
 
     parser.add_argument ("-z", "--zookeeper", default="localhost:2181", help="IP Addr:Port combo for the zookeeper service, default is localhost:2181")
 

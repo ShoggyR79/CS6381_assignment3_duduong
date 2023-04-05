@@ -129,7 +129,7 @@ message DiscoveryResp
 
 
 message Publication{
-    float timestamp = 1;
+    double timestamp = 1;
     string topic = 2;
     string data = 3;
 }
