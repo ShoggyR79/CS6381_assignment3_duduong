@@ -66,6 +66,7 @@ class BrokerMW():
             # first retrieve our advertised ip addr and publication port num
             self.port = args.port
             self.addr = args.addr
+            self.name = args.name
             
             # get ZMQ context
             self.logger.debug("BrokerMW::configure: obtain ZMQ context")
@@ -130,7 +131,7 @@ class BrokerMW():
         def watch_broker(data, stat):
             if data is None:
                 self.logger.info("BrokerMW::watch_broker: broker node deleted, attempting to become leader")
-                self.broker_leader()
+                self.broker_leader(self.name)
                 
         @self.zk.DataWatch("/leader")
         def watch_leader(data, stat):

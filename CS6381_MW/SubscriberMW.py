@@ -233,7 +233,7 @@ class SubscriberMW():
             self.start_time = timeit.default_timer()
             self.logger.info("SubscriberMW::subscribe: {}".format(publist))
             for pub in publist:
-                addr = "tcp://10.0.0.7:5577"
+                addr = "tcp://" + pub["addr"] + ":" + str(pub["port"])
                 self.logger.info("SubscriberMW::subscribe: connecting to {}".format(addr))
                 self.sub.connect(addr)
 
@@ -255,7 +255,7 @@ class SubscriberMW():
             self.logger.debug(
                 "SubscriberMW::recv_data, value = {}: {}- {}".format(timestamp, topic, data))
             # print("Subscriber::recv_data, value = {}: {}- {}".format(timestamp, topic, data))
-            self.logger.debug("Time Received: {} \nTime Sent: {}\nLatency = {}".format(recv_time, message.timestamp, latency))
+            self.logger.debug("Time Received: {} \nTime Sent: {}\nLatency = {}".format(recv_time, message.timestamp , latency))
         except Exception as e:
             raise e
 
