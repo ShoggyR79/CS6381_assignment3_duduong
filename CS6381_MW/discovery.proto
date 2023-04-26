@@ -131,5 +131,5 @@ message DiscoveryResp
 message Publication{
     double timestamp = 1;
     string topic = 2;
-    string data = 3;
+    repeated string data = 3;
 }

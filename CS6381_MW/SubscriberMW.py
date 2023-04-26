@@ -248,14 +248,16 @@ class SubscriberMW():
             timestamp = message.timestamp
             topic = message.topic
             data = message.data
-            recv_time = time.monotonic()
-            latency = recv_time - message.timestamp
-            data_point = ((recv_time - self.start_time), latency)
-            self.write_csv(self.filename, data_point)
-            self.logger.debug(
-                "SubscriberMW::recv_data, value = {}: {}- {}".format(timestamp, topic, data))
-            # print("Subscriber::recv_data, value = {}: {}- {}".format(timestamp, topic, data))
-            self.logger.debug("Time Received: {} \nTime Sent: {}\nLatency = {}".format(recv_time, message.timestamp , latency))
+            if (len(data) >= self.h_size):
+                data = data[:self.h_size]
+                recv_time = time.monotonic()
+                latency = recv_time - message.timestamp
+                data_point = ((recv_time - self.start_time), latency)
+                self.write_csv(self.filename, data_point)
+                self.logger.debug(
+                    "SubscriberMW::recv_data, value = {}: {}- {}".format(timestamp, topic, data))
+                # print("Subscriber::recv_data, value = {}: {}- {}".format(timestamp, topic, data))
+                self.logger.debug("Time Received: {} \nTime Sent: {}\nLatency = {}".format(recv_time, message.timestamp , latency))
         except Exception as e:
             raise e
 

@@ -46,7 +46,7 @@ class BrokerAppln():
         LOOKUP = 4,
         DISSEMINATE = 5,
         COMPLETED = 6
-    
+
     def __init__(self, logger):
         self.state = self.State.INITIALIZE
         self.name = None
@@ -55,57 +55,58 @@ class BrokerAppln():
         self.dissemination = None
         self.mw_obj = None
         self.logger = logger
-        
+
     def configure(self, args):
         try:
             self.logger.info("BrokerAppln::configure")
-            
+
             # set our state
             self.state = self.State.CONFIGURE
-            
-            #init variables
+
+            # init variables
             self.name = args.name
-            
-            #get config object
+
+            # get config object
             self.logger.debug("BrokerAppln::configure - parsing config.ini")
             config = configparser.ConfigParser()
             config.read(args.config)
             self.lookup = config["Discovery"]["Strategy"]
             self.dissemination = config["Dissemination"]["Strategy"]
-            
+
             self.logger.debug("BrokerAppln::configure - creating topic list")
-            ts = TopicSelector()
-            self.topiclist = ts.all()
             
+
             # setup the middleware object
-            self.logger.debug("BrokerAppln::configure - creating middleware object")
+            self.logger.debug(
+                "BrokerAppln::configure - creating middleware object")
             self.mw_obj = BrokerMW(self.logger)
             self.logger.debug("BrokerAppln::driver - upcall handler")
             self.mw_obj.set_upcall_handle(self)
-            self.mw_obj.configure(args, self.topiclist) # pass remainder of args to the m/w object
-            
+            # pass remainder of args to the m/w object
+            self.mw_obj.configure(args, self.topiclist)
+            self.ts = self.mw_obj.get_topics()
             self.logger.info("BrokerAppln::configure - completed")
         except Exception as e:
             raise e
-    
-    def driver (self):
+
+    def driver(self):
         try:
             self.logger.info("BrokerAppln::driver")
             self.dump()
-            
-            
+
             self.mw_obj.setWatch()
             self.state = self.State.REGISTER
-            
-            self.mw_obj.event_loop(timeout = 0)
+
+            self.mw_obj.event_loop(timeout=0)
             self.logger.info("BrokerAppln::driver - completed")
         except Exception as e:
             raise e
-   
+
     def invoke_operation(self):
         try:
             self.logger.info("BrokerAppln::invoke_operation")
-            self.logger.info("BrokerAppln::invoke_operation - state: {}".format(self.state))
+            self.logger.info(
+                "BrokerAppln::invoke_operation - state: {}".format(self.state))
             if self.state == self.State.REGISTER:
                 return None
             elif (self.state == self.State.ISREADY):
@@ -114,20 +115,22 @@ class BrokerAppln():
                 return None
         except Exception as e:
             raise e
-        
+
     def handle_subscription(self, publist):
         self.logger.info("BrokerAppln::handle_subscription")
         self.mw_obj.subscribe(publist)
+
     def dump(self):
         try:
-            self.logger.info ("**********************************")
-            self.logger.info ("BrokerAppln::dump")
-            self.logger.info ("------------------------------")
-            self.logger.info ("     Name: {}".format (self.name))
-            self.logger.info ("     Lookup: {}".format (self.lookup))
-            self.logger.info ("     Dissemination: {}".format (self.dissemination))
-            self.logger.info ("     TopicList: {}".format (self.topiclist))
-            self.logger.info ("**********************************")
+            self.logger.info("**********************************")
+            self.logger.info("BrokerAppln::dump")
+            self.logger.info("------------------------------")
+            self.logger.info("     Name: {}".format(self.name))
+            self.logger.info("     Lookup: {}".format(self.lookup))
+            self.logger.info(
+                "     Dissemination: {}".format(self.dissemination))
+            self.logger.info("     TopicList: {}".format(self.topiclist))
+            self.logger.info("**********************************")
 
         except Exception as e:
             raise e
@@ -136,64 +139,80 @@ class BrokerAppln():
 # Parse command line arguments
 #
 ###################################
-def parseCmdLineArgs ():
-  # instantiate a ArgumentParser object
-  parser = argparse.ArgumentParser (description="broker Application")
-  
-  # Now specify all the optional arguments we support
-  # At a minimum, you will need a way to specify the IP and port of the lookup
-  # service, the role we are playing, what dissemination approach are we
-  # using, what is our endpoint (i.e., port where we are going to bind at the
-  # ZMQ level)
-  
-  parser.add_argument ("-n", "--name", default="broker", help="Some name assigned to broker")
 
-  parser.add_argument ("-a", "--addr", default="localhost", help="IP addr of this broker to advertise (default: localhost)")
 
-  parser.add_argument ("-p", "--port", type=int, default=7777, help="Port number on which our underlying broker ZMQ service runs, default=7777")
-    
-  parser.add_argument ("-d", "--discovery", default="localhost:5555", help="IP Addr:Port combo for the discovery service, default localhost:5555")
+def parseCmdLineArgs():
+    # instantiate a ArgumentParser object
+    parser = argparse.ArgumentParser(description="broker Application")
 
-  parser.add_argument ("-c", "--config", default="config.ini", help="configuration file (default: config.ini)")
+    # Now specify all the optional arguments we support
+    # At a minimum, you will need a way to specify the IP and port of the lookup
+    # service, the role we are playing, what dissemination approach are we
+    # using, what is our endpoint (i.e., port where we are going to bind at the
+    # ZMQ level)
 
-  parser.add_argument ("-l", "--loglevel", type=int, default=logging.DEBUG, choices=[logging.DEBUG,logging.INFO,logging.WARNING,logging.ERROR,logging.CRITICAL], help="logging level, choices 10,20,30,40,50: default 20=logging.INFO")
-  
-  parser.add_argument ("-z", "--zookeeper", default="localhost:2181", help="IP Addr:Port combo for the zookeeper service, default is localhost:2181")
+    parser.add_argument("-n", "--name", default="broker",
+                        help="Some name assigned to broker")
 
-  return parser.parse_args()
+    parser.add_argument("-a", "--addr", default="localhost",
+                        help="IP addr of this broker to advertise (default: localhost)")
+
+    parser.add_argument("-p", "--port", type=int, default=7777,
+                        help="Port number on which our underlying broker ZMQ service runs, default=7777")
+
+    parser.add_argument("-d", "--discovery", default="localhost:5555",
+                        help="IP Addr:Port combo for the discovery service, default localhost:5555")
+
+    parser.add_argument("-c", "--config", default="config.ini",
+                        help="configuration file (default: config.ini)")
+
+    parser.add_argument("-l", "--loglevel", type=int, default=logging.DEBUG, choices=[
+                        logging.DEBUG, logging.INFO, logging.WARNING, logging.ERROR, logging.CRITICAL], help="logging level, choices 10,20,30,40,50: default 20=logging.INFO")
+
+    parser.add_argument("-z", "--zookeeper", default="localhost:2181",
+                        help="IP Addr:Port combo for the zookeeper service, default is localhost:2181")
+
+    parser.add_argument("-g", "--groups", type=int, default=3,
+                        help="Number of groups to divide the brokers into, default=3")
+
+    return parser.parse_args()
 
 
 def main():
     try:
-        logging.info("Main - acqurie a child logger and then log messages in child")
+        logging.info(
+            "Main - acqurie a child logger and then log messages in child")
     # obtain a system wide logger and initialize it to debug level to begin with
-        logging.info ("Main - acquire a child logger and then log messages in the child")
-        logger = logging.getLogger ("BrokerAppln")
-        
+        logging.info(
+            "Main - acquire a child logger and then log messages in the child")
+        logger = logging.getLogger("BrokerAppln")
+
         # first parse the arguments
-        logger.debug ("Main: parse command line arguments")
-        args = parseCmdLineArgs ()
+        logger.debug("Main: parse command line arguments")
+        args = parseCmdLineArgs()
 
         # reset the log level to as specified
-        logger.debug ("Main: resetting log level to {}".format (args.loglevel))
-        logger.setLevel (args.loglevel)
-        logger.debug ("Main: effective log level is {}".format (logger.getEffectiveLevel ()))
+        logger.debug("Main: resetting log level to {}".format(args.loglevel))
+        logger.setLevel(args.loglevel)
+        logger.debug("Main: effective log level is {}".format(
+            logger.getEffectiveLevel()))
 
         # Obtain a broker application
-        logger.debug ("Main: obtain the broker appln object")
-        broker_app = BrokerAppln (logger)
+        logger.debug("Main: obtain the broker appln object")
+        broker_app = BrokerAppln(logger)
 
         # configure the object
-        logger.debug ("Main: configure the broker appln object")
-        broker_app.configure (args)
+        logger.debug("Main: configure the broker appln object")
+        broker_app.configure(args)
 
         # now invoke the driver program
-        logger.debug ("Main: invoke the broker appln driver")
-        broker_app.driver ()
+        logger.debug("Main: invoke the broker appln driver")
+        broker_app.driver()
 
     except Exception as e:
-        logger.error ("Exception caught in main - {}".format (e))
+        logger.error("Exception caught in main - {}".format(e))
         return
+
 
 ###############################################
 #
@@ -204,5 +223,5 @@ if __name__ == "__main__":
     # set underlying defautl logging capability
     logging.basicConfig(
         level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-    
+
     main()

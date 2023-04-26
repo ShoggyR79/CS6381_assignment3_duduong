@@ -108,6 +108,7 @@ class DiscoveryAppln():
             self.dump()
 
             self.state = self.State.ISREADY
+            self.mw_obj.create_broker_groups()
             self.mw_obj.setWatch()
             self.mw_obj.event_loop(timeout=0)
 
@@ -266,6 +267,9 @@ def parseCmdLineArgs():
     
     parser.add_argument("-l", "--loglevel", type=int, default=logging.INFO, choices=[
                         logging.DEBUG, logging.INFO, logging.WARNING, logging.ERROR, logging.CRITICAL], help="logging level, choices 10,20,30,40,50: default 20=logging.INFO")
+    
+    parser.add_argument("-g", "--groups", type=int, default=3,
+                        help="Number of groups to divide the brokers into, default=3")
 
     return parser.parse_args()
 

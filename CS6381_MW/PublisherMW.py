@@ -62,11 +62,14 @@ class PublisherMW ():
     self.zk = None
     self.name = None
     self.discovery = None #string of discovery service address to disconnect from
+    self.topiclist = None #list of topics to publish
+    self.history = None #dictionary with key = topic and value = list of messages of size N
+    self.h_size = None #size of history
 
   ########################################
   # configure/initialize
   ########################################
-  def configure (self, args):
+  def configure (self, args, topiclist):
     ''' Initialize the object '''
 
     try:
@@ -80,6 +83,8 @@ class PublisherMW ():
       self.port = args.port
       self.addr = args.addr
       self.name = args.name
+      self.h_size = args.h_size
+      self.topiclist = topiclist
       # Next get the ZMQ context
       self.logger.debug ("PublisherMW::configure - obtain ZMQ context")
       context = zmq.Context ()  # returns a singleton object
@@ -136,7 +141,26 @@ class PublisherMW ():
 
     except Exception as e:
       raise e
-  
+  def try_leader(self, topiclist):
+    for topic in topiclist:
+      self.logger.info("PublisherMW::try_leader: trying to become leader for topic: " + topic)
+      try:
+        self.zk.create("/{}".format(topic), value=self.name.encode('utf'), ephemeral=True, makepath=True)
+        self.logger.info("PublisherMW::try_leader: successfully became leader for topic: " + topic)
+      except NodeExistsError:
+        self.logger.info("PublisherMW::try_leader: failed to become leader for topic: " + topic)
+      except Exception as e:
+        raise e
+      
+  def setWatch(self):
+    for topic in self.topiclist:
+      # watch for if the leader node is deleted
+      @self.zk.DataWatch("/{}".format(topic))
+      def watch_topic(data, stat):
+        if data is None:
+          self.logger.info("PublisherMW::watch_topic: leader node for topic: " + topic + " deleted")
+          self.try_leader([topic])    
+          
   def set_req(self):
     self.zk.start()
     try:
@@ -330,20 +354,29 @@ class PublisherMW ():
 
       # Now use the protobuf logic to encode the info and send it.  But for now
       # we are simply sending the string to make sure dissemination is working.
-      send_str = topic + ":" + data
-      
-      #EDIT: building the protobuf message 
-      send_msg = discovery_pb2.Publication()
-      send_msg.timestamp = time.monotonic()
-      send_msg.topic = topic
-      send_msg.data = data
-      self.logger.debug ("PublisherMW::disseminate - {}".format (send_str))
-      # now let us stringify the buffer and print it. This is actually a sequence of bytes and not
-      # a real string
-      buf2send = send_msg.SerializeToString ()
-      self.logger.debug ("Stringified serialized buf = {}".format (buf2send))
-      # send the info as bytes. See how we are providing an encoding of utf-8
-      self.pub.send_multipart ([bytes(send_str, "utf-8"), buf2send])
+      data, _ = self.zk.get("/{}".format(topic))
+      if data.decode("utf-8") == self.name:        
+        send_str = topic + ":" + data
+        if (topic not in self.history):
+          self.history[topic] = []
+        self.history[topic].insert(0, data)
+        if (len(self.history[topic]) > self.h_size ):
+          self.history[topic].pop()
+        #EDIT: building the protobuf message 
+        send_msg = discovery_pb2.Publication()
+        send_msg.timestamp = time.monotonic()
+        send_msg.topic = topic
+        send_msg.data[:] = self.history[topic]
+        
+        self.logger.debug ("PublisherMW::disseminate - {}".format (send_str))
+        # now let us stringify the buffer and print it. This is actually a sequence of bytes and not
+        # a real string
+        buf2send = send_msg.SerializeToString ()
+        self.logger.debug ("Stringified serialized buf = {}".format (buf2send))
+        # send the info as bytes. See how we are providing an encoding of utf-8
+        self.pub.send_multipart ([bytes(send_str, "utf-8"), buf2send])
+      else:
+        self.logger.info("Not leader, cancel publishing.")
 
       self.logger.debug ("PublisherMW::disseminate complete")
     except Exception as e:

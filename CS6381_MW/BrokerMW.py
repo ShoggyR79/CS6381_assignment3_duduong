@@ -23,7 +23,7 @@
 import os     # for OS functions
 import sys    # for syspath and system exception
 import time   # for sleep
-import logging # for logging. Use it in place of print statements.
+import logging  # for logging. Use it in place of print statements.
 import zmq  # ZMQ sockets
 import json
 
@@ -34,32 +34,36 @@ from kazoo.recipe.watchers import DataWatch
 
 # import serialization logic
 from CS6381_MW import discovery_pb2
-#from CS6381_MW import topic_pb2  # you will need this eventually
+# from CS6381_MW import topic_pb2  # you will need this eventually
 
 # import any other packages you need.
+
 
 class BrokerMW():
     ########################################
     # constructor
     ########################################
     def __init__(self, logger):
-        self.logger = logger # internal logger for print statements
-        self.req = None # a REQ socket binding to send requests to discovery service
-        self.addr = None # our advertised IP address
-        self.port = None # port num where we are going to broker
-        self.pub = None # a PUB socket binding to publish to subscribers
-        self.sub = None # a SUB socket binding to receive from publishers
-        self.poller = None # a poller object to poll on the sockets
-        self.upcall_obj = None # handle to appln obj to handle appln-specific data
-        self.handle_events = True # in general we keep going thru the event loop
-        self.zk = None # handle to zookeeper client
+        self.logger = logger  # internal logger for print statements
+        self.req = None  # a REQ socket binding to send requests to discovery service
+        self.addr = None  # our advertised IP address
+        self.port = None  # port num where we are going to broker
+        self.pub = None  # a PUB socket binding to publish to subscribers
+        self.sub = None  # a SUB socket binding to receive from publishers
+        self.poller = None  # a poller object to poll on the sockets
+        self.upcall_obj = None  # handle to appln obj to handle appln-specific data
+        self.handle_events = True  # in general we keep going thru the event loop
+        self.zk = None  # handle to zookeeper client
         self.discovery = None
-        
+        self.groups = 0
+        self.order = -1
+        self.topiclist = None
+
     ########################################
     # configure/initialize
     ########################################
-    
-    def configure (self, args, topiclist):
+
+    def configure(self, args):
         '''Initialize the object'''
         try:
             self.logger.info("BrokerMW::configure")
@@ -67,107 +71,144 @@ class BrokerMW():
             self.port = args.port
             self.addr = args.addr
             self.name = args.name
-            
+            self.groups = args.groups
             # get ZMQ context
             self.logger.debug("BrokerMW::configure: obtain ZMQ context")
             context = zmq.Context()
             self.poller = zmq.Poller()
-            
+
             # now aquire the sockets
             # REQ socket to talk to discovery service
             # PUB socket to publish to subscribers
             # SUB socket to receive from publishers
-            self.logger.debug("BrokerMW::configure: obtain REQ, PUB, and SUB socket")
+            self.logger.debug(
+                "BrokerMW::configure: obtain REQ, PUB, and SUB socket")
             self.req = context.socket(zmq.REQ)
             self.pub = context.socket(zmq.PUB)
             self.sub = context.socket(zmq.SUB)
-            
 
             # register our sockets iwth th poller
-            self.logger.debug("BrokerMW::configure: register the REQ and SUB sockets with the poller")
+            self.logger.debug(
+                "BrokerMW::configure: register the REQ and SUB sockets with the poller")
             self.poller.register(self.req, zmq.POLLIN)
             self.poller.register(self.sub, zmq.POLLIN)
+
             
-            for topic in topiclist:
-                self.sub.setsockopt_string(zmq.SUBSCRIBE, topic)
-            
-            
-            
+
             # need to do both publisher and subscriber binding
             self.logger.debug("BrokerMW::configure: bind to the PUB")
             bind_string = "tcp://*:" + str(self.port)
             self.pub.bind(bind_string)
-            
+
             self.logger.debug("BrokerMW::configure: creating ZK client")
             self.zk = KazooClient(hosts=args.zookeeper)
             self.zk.start()
-            self.broker_leader(args.name)
-
+            self.wait_group_creation()
+            self.order = self.assignOrder(self.groups)
+            self.group_no = self.order % self.groups
+            self.broker_leader()
             self.set_req()
-            
+
             self.logger.info("BrokerMW::configure completed")
         except Exception as e:
             raise e
-    
+
     def set_req(self):
         try:
             while (self.zk.exists("/leader") == None):
                 time.sleep(1)
             meta = json.loads(self.zk.get("/leader")[0].decode('utf-8'))
             if self.discovery != None:
-                self.logger.info("SubscriberMW::set_req: disconnecting from {}".format(self.discovery))
+                self.logger.info(
+                    "SubscriberMW::set_req: disconnecting from {}".format(self.discovery))
                 self.req.disconnect(self.discovery)
             self.req.connect(meta["rep_addr"])
             self.discovery = meta["rep_addr"]
             self.logger.debug("Successfully connected to leader")
-                
+
         except Exception as e:
             raise e
 
-
-
     def setWatch(self):
-        @self.zk.DataWatch("/broker")
+        @self.zk.DataWatch("/broker/group/{}".format(self.order))
         def watch_broker(data, stat):
             if data is None:
-                self.logger.info("BrokerMW::watch_broker: broker node deleted, attempting to become leader")
+                self.logger.info(
+                    "BrokerMW::watch_broker: broker node deleted, attempting to become leader")
                 self.broker_leader(self.name)
-                
+
         @self.zk.DataWatch("/leader")
         def watch_leader(data, stat):
             self.logger.info("BrokerMW::watch_leader: leader node changed")
             self.set_req()
+
         @self.zk.ChildrenWatch("/publisher")
         def watch_pubs(children):
-            self.logger.info("BrokerMW::watch_pubs: publishers changed, re-subscribing")
             # self.set_req()
+            self.logger.info(
+            "SubscriberMW::watch_pubs: publishers changed, re-subscribing")
             publishers = []
             for child in children:
                 path = "/publisher/" + child
                 data, _ = self.zk.get(path)
-                publishers.append(json.loads(data.decode("utf-8"))['id'])
-            self.logger.info("BrokerMW::watch_pubs: {}".format(publishers))
-            self.subscribe(publishers)
+                publishers.append(json.loads(data.decode("utf-8")))
+                self.logger.info("DiscoveryMW::watch_pubs: {}".format(publishers))
+                self.upcall_obj.update_publishers_info(publishers)
 
-    def broker_leader(self, name):
+    def assignOrder(self, number):
+        # assign a number to itself from path /brokers/order
         try:
-            self.logger.info("BrokerMW::broker_leader")
-            self.zk.start()
-            self.logger.info("BrokerMW::broker_leader: connected to zookeeper")
-            try:
-                self.logger.info("BrokerMW::broker_leader: broker node does not exist, creating self")
-                addr = {"id": name, "addr": self.addr, "port": self.port}
-                data = json.dumps(addr)
-                self.zk.create("/broker", value=data.encode('utf-8'), ephemeral=True, makepath=True)
-            except NodeExistsError:
-                self.logger.info("BrokerMW::broker_leader: broker node exists")
-                
+            number = 0
 
+            self.zk.create("/brokers/order/{}".format(number),
+                           value={self.name}, ephemeral=True, makepath=True)
+            self.logger.info(
+                "BrokerMW::assignOrder: assigned order {}".format(number))
+            return number
+        except NodeExistsError:
+            return self.assignOrder(number + 1)
         except Exception as e:
             raise e
-    
-    
-        
+
+    def wait_group_creation(self, name):
+        try:
+            self.logger.info("BrokerMW::wait_group_creation")
+            while (self.zk.exists("/brokers/group") == None):
+                time.sleep(2)
+            self.logger.info(
+                "BrokerMW::wait_group_creation: broker group created")
+            return
+        except Exception as e:
+            raise e
+
+    def broker_leader(self):
+        try:
+            self.logger.info("BrokerMW::broker_leader")
+            addr = {"id": self.name, "addr": self.addr, "port": self.port}
+            data = json.dumps(addr)
+            self.logger.info(
+                "BrokerMW::broker_leader: attempting to create leader node for group {}".format(self.group_no))
+            self.zk.create("/broker/group/{}/leader".format(self.group_no),
+                           value=data, ephemeral=True, makepath=True)
+            self.logger.info("BrokerMW::broker_leader: created leader node")
+            return
+        except NodeExistsError:
+            self.logger.info(
+                "BrokerMW::broker_leader: leader node already exists")
+        except Exception as e:
+            raise e
+
+ 
+    def get_topics(self):
+        while (self.zk.exists("/broker/group/{}".format(self.group_no)) != None):
+            time.sleep(1)
+        data, _ = self.zk.get("/broker/group/{}".format(self.group_no))
+        topics = json.loads(data.decode("utf-8"))['topics']
+        self.topiclist = topics
+        for topic in topics:
+                self.sub.setsockopt_string(zmq.SUBSCRIBE, topic)
+        return topics
+         
     ########################################
     # run event loop 
     ########################################

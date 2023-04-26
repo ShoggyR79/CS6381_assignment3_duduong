@@ -69,6 +69,7 @@ class DiscoveryMW():
             self.port = args.port
             self.addr = args.addr
             self.name = args.name
+            self.groups = args.groups
             # obtain the ZMQ context
             self.logger.debug("DiscoveryMW::configure: obtain ZMQ context")
             context = zmq.Context()
@@ -189,6 +190,26 @@ class DiscoveryMW():
                 self.sub.setsockopt_string(zmq.SUBSCRIBE, "backup")
                 return
             
+        except Exception as e:
+            raise e
+        
+    def create_broker_groups(self, topiclist):
+        try:
+            self.logger.info("DiscoveryMW::create_broker_groups: topiclist = {}".format(
+                topiclist))
+            # create a group for each topic with data being number of groups
+            self.zk.create("/brokers/group", value=self.groups,makepath=True)
+            steps = topiclist.len() / self.groups
+            for i in range(self.groups):
+                topics = topiclist[i * steps: (i + 1) * steps]
+                data = json.dumps({"topics": topics})
+                self.logger.info("DiscoveryMW::create_broker_groups: topics = {}".format(topics))
+                self.zk.create("/brokers/group/{}".format(i), value=data.encode('utf-8'), makepath=True)
+                
+                
+        except NodeExistsError:
+            self.logger.info("DiscoveryMW::create_broker_groups: node already exists")
+            return
         except Exception as e:
             raise e
 
@@ -349,6 +370,8 @@ class DiscoveryMW():
                 "DiscoveryMW::lookup_reply: done replying to client lookup request")
         except Exception as e:
             raise e
+
+   
 
     def set_upcall_handle(self, upcall_obj):
         self.upcall_obj = upcall_obj
