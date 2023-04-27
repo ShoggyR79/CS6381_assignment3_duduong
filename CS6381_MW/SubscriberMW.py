@@ -72,6 +72,7 @@ class SubscriberMW():
         self.discovery = None
 
         self.dissemination_method = None
+        self.h_size = 0
     # configure/initialize
 
     def configure(self, args, dissemination_method, topiclist):
@@ -79,6 +80,7 @@ class SubscriberMW():
 
             self.logger.debug("SubscriberMW: configure")
             self.filename = args.filename
+            self.h_size = args.h_size
             self.dissemination_method = dissemination_method
             # # First retrieve our advertised IP addr and the subscriber port num
             # self.port = args.port

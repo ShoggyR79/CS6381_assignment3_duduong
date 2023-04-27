@@ -185,6 +185,7 @@ def parseCmdLineArgs():
 
     parser.add_argument ("-z", "--zookeeper", default="localhost:2181", help="IP Addr:Port combo for the zookeeper service, default is localhost:2181")
 
+    parser.add_argument ("-hs", "--h_size", type=int, default=10, help="Size of the history buffer, default is 10")
     return parser.parse_args()
 # main program
 def main():

@@ -351,17 +351,17 @@ class PublisherMW ():
   def disseminate (self, id, topic, data):
     try:
       self.logger.debug ("PublisherMW::disseminate")
-
+      if (topic not in self.history):
+          self.history[topic] = []
+      self.history[topic].insert(0, data)
+      if (len(self.history[topic]) > self.h_size ):
+        self.history[topic].pop()
       # Now use the protobuf logic to encode the info and send it.  But for now
       # we are simply sending the string to make sure dissemination is working.
       data, _ = self.zk.get("/{}".format(topic))
       if data.decode("utf-8") == self.name:        
         send_str = topic + ":" + data
-        if (topic not in self.history):
-          self.history[topic] = []
-        self.history[topic].insert(0, data)
-        if (len(self.history[topic]) > self.h_size ):
-          self.history[topic].pop()
+        
         #EDIT: building the protobuf message 
         send_msg = discovery_pb2.Publication()
         send_msg.timestamp = time.monotonic()
